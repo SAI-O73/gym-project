@@ -1,25 +1,19 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import SectionHeading from '../components/SectionHeading';
-import { fetchProfile, saveProfile } from '../services/supabase';
 
 export default function Profile() {
   const [profile, setProfile] = useState({ full_name: '', email: '', weight: '', height: '', goal: 'Maintenance' });
+  const [saved, setSaved] = useState(false);
 
-  useEffect(() => {
-    fetchProfile().then(({ data }) => {
-      if (data) setProfile({ ...profile, ...data });
-    });
-  }, []);
-
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    await saveProfile(profile);
+    setSaved(true);
   };
 
   return (
     <div className="min-h-screen bg-black px-4 py-16 text-white sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
-        <SectionHeading eyebrow="Profile" title="Own your metrics" description="Update your profile and let the dashboard stay in sync." />
+        <SectionHeading eyebrow="Profile" title="Own your metrics" description="Update your profile and keep your dashboard aligned with your goals." />
         <form onSubmit={handleSubmit} className="rounded-[32px] border border-white/10 bg-white/8 p-8 backdrop-blur-xl">
           <div className="grid gap-4 md:grid-cols-2">
             <input value={profile.full_name || ''} onChange={(e) => setProfile({ ...profile, full_name: e.target.value })} placeholder="Name" className="rounded-2xl border border-white/10 bg-black/30 px-4 py-3 outline-none" />
@@ -33,6 +27,7 @@ export default function Profile() {
             </select>
           </div>
           <button type="submit" className="mt-6 rounded-full bg-gradient-to-r from-cyan-500 to-fuchsia-500 px-6 py-3 font-semibold">Save Profile</button>
+          {saved ? <p className="mt-4 text-sm text-cyan-300">Profile updated locally for this session.</p> : null}
         </form>
       </div>
     </div>

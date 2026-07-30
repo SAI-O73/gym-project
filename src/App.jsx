@@ -6,7 +6,6 @@ import ProtectedRoute from './components/ProtectedRoute';
 import Login from './pages/Login';
 import Home from './pages/Home';
 import Diet from './pages/Diet';
-import Workouts from './pages/Workouts';
 import Protein from './pages/Protein';
 import BMI from './pages/BMI';
 import AIChat from './pages/AIChat';
@@ -22,14 +21,13 @@ function App() {
         <main>
           <Routes>
             <Route path="/" element={<Login />} />
-            <Route path="/home" element={<Home />} />
-            <Route path="/diet" element={<Diet />} />
-            <Route path="/workouts" element={<Workouts />} />
-            <Route path="/protein" element={<Protein />} />
-            <Route path="/bmi" element={<BMI />} />
-            <Route path="/ai" element={<AIChat />} />
-            <Route path="/contact" element={<Contact />} />
             <Route element={<ProtectedRoute />}>
+              <Route path="/home" element={<Home />} />
+              <Route path="/diet" element={<Diet />} />
+              <Route path="/protein" element={<Protein />} />
+              <Route path="/bmi" element={<BMI />} />
+              <Route path="/ai" element={<AIChat />} />
+              <Route path="/contact" element={<Contact />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/profile" element={<Profile />} />
             </Route>

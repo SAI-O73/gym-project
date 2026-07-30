@@ -1,13 +1,11 @@
 import { useState } from 'react';
 import SectionHeading from '../components/SectionHeading';
-import { saveContactMessage } from '../services/supabase';
 
 export default function Contact() {
   const [form, setForm] = useState({ name: '', email: '', message: '' });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await saveContactMessage(form);
     setForm({ name: '', email: '', message: '' });
   };
 

@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Link, useNavigate } from 'react-router-dom';
-import { FiMail, FiLock, FiUser, FiCheckCircle, FiAlertCircle } from 'react-icons/fi';
-import { signInWithEmail, signUpWithEmail } from '../services/supabase';
+import { useNavigate } from 'react-router-dom';
+import { FiMail, FiLock, FiUser, FiCheckCircle } from 'react-icons/fi';
+import { signInWithEmail, signUpWithEmail, supabase } from '../services/supabase';
 import { toast } from 'react-hot-toast';
 
 export default function Login() {
@@ -10,6 +10,17 @@ export default function Login() {
   const [mode, setMode] = useState('login');
   const [form, setForm] = useState({ name: '', email: '', password: '', confirmPassword: '' });
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const checkSession = async () => {
+      const { data } = await supabase.auth.getSession();
+      if (data.session) {
+        navigate('/dashboard');
+      }
+    };
+
+    checkSession();
+  }, [navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -23,7 +34,7 @@ export default function Login() {
 
     try {
       if (mode === 'register') {
-        const { data, error } = await signUpWithEmail({ name: form.name, email: form.email, password: form.password });
+        const { data, error } = await signUpWithEmail({ email: form.email, password: form.password });
         if (error) throw error;
         toast.success('Account created. Please verify your email before logging in.');
         setMode('login');
@@ -48,7 +59,6 @@ export default function Login() {
     <div className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(34,211,238,0.18),_transparent_30%),radial-gradient(circle_at_bottom_right,_rgba(192,132,252,0.18),_transparent_35%),#000] px-4 py-10 text-white sm:px-6 lg:px-8">
       <div className="mx-auto flex max-w-6xl flex-col items-center justify-center gap-8 lg:flex-row">
         <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} className="max-w-xl text-center lg:text-left">
-          <p className="mb-4 inline-flex rounded-full border border-cyan-400/30 bg-cyan-400/10 px-4 py-2 text-sm font-medium text-cyan-300">Premium fitness intelligence</p>
           <h1 className="text-4xl font-semibold sm:text-5xl lg:text-6xl">Welcome to your AI-powered training studio.</h1>
           <p className="mt-5 text-lg text-slate-300">Join elite programs, a digital coach, and progress tracking crafted for your goals.</p>
         </motion.div>

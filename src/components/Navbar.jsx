@@ -1,13 +1,13 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { FiLogOut, FiMenu, FiX } from 'react-icons/fi';
-import { useState } from 'react';
-import { clearSession, getSession } from '../services/supabase';
+import { useEffect, useState } from 'react';
+import { signOut, supabase } from '../services/supabase';
+import { toast } from 'react-hot-toast';
 
 const links = [
   { label: 'Home', to: '/' },
   { label: 'Diet Plans', to: '/diet' },
-  { label: 'Workouts', to: '/workouts' },
   { label: 'Protein', to: '/protein' },
   { label: 'BMI', to: '/bmi' },
   { label: 'AI Coach', to: '/ai' },
@@ -18,11 +18,39 @@ const links = [
 export default function Navbar() {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
-  const session = getSession();
+  const [session, setSession] = useState(null);
 
-  const handleLogout = () => {
-    clearSession();
+  useEffect(() => {
+    let active = true;
+
+    const loadSession = async () => {
+      const { data } = await supabase.auth.getSession();
+      if (active) setSession(data.session);
+    };
+
+    loadSession();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, currentSession) => {
+      if (active) setSession(currentSession);
+    });
+
+    return () => {
+      active = false;
+      subscription.unsubscribe();
+    };
+  }, []);
+
+  const handleLogout = async () => {
+    await signOut();
+    setSession(null);
     navigate('/');
+  };
+
+  const handleProtectedClick = (event, to) => {
+    if (!session && to !== '/') {
+      event.preventDefault();
+      toast.error('Please login first!');
+    }
   };
 
   return (
@@ -48,7 +76,7 @@ export default function Navbar() {
 
         <nav className="hidden items-center gap-6 lg:flex">
           {links.map((link) => (
-            <Link key={link.to} to={link.to} className="text-sm text-slate-300 transition hover:text-cyan-300">
+            <Link key={link.to} to={link.to} onClick={(event) => handleProtectedClick(event, link.to)} className="text-sm text-slate-300 transition hover:text-cyan-300">
               {link.label}
             </Link>
           ))}
@@ -64,7 +92,10 @@ export default function Navbar() {
         <div className="border-t border-white/10 bg-black/90 px-4 py-4 lg:hidden">
           <div className="flex flex-col gap-3">
             {links.map((link) => (
-              <Link key={link.to} to={link.to} onClick={() => setOpen(false)} className="text-sm text-slate-300">
+              <Link key={link.to} to={link.to} onClick={(event) => {
+                setOpen(false);
+                handleProtectedClick(event, link.to);
+              }} className="text-sm text-slate-300">
                 {link.label}
               </Link>
             ))}

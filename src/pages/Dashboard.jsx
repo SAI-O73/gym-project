@@ -1,12 +1,7 @@
-import { useEffect, useState } from 'react';
-import { fetchProfile } from '../services/supabase';
+import { useState } from 'react';
 
 export default function Dashboard() {
-  const [profile, setProfile] = useState(null);
-
-  useEffect(() => {
-    fetchProfile().then(({ data }) => setProfile(data));
-  }, []);
+  const [profile] = useState(null);
 
   return (
     <div className="min-h-screen bg-black px-4 py-16 text-white sm:px-6 lg:px-8">
