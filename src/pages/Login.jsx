@@ -1,19 +1,47 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { FiMail, FiLock, FiUser, FiCheckCircle } from 'react-icons/fi';
-import { signInWithEmail, signUpWithEmail, supabase } from '../services/supabase';
+import { FiMail, FiLock, FiUser, FiCheckCircle, FiSave } from 'react-icons/fi';
+import { getSession, signInWithEmail, signUpWithEmail } from '../services/supabase';
 import { toast } from 'react-hot-toast';
+
+const STORAGE_KEY = 'ai-gym-saved-credentials';
+
+function getSavedCredentials() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+}
+
+function saveCredentials(email, password) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify({ email, password }));
+}
+
+function clearSavedCredentials() {
+  localStorage.removeItem(STORAGE_KEY);
+}
 
 export default function Login() {
   const navigate = useNavigate();
   const [mode, setMode] = useState('login');
   const [form, setForm] = useState({ name: '', email: '', password: '', confirmPassword: '' });
   const [loading, setLoading] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
+
+  useEffect(() => {
+    const saved = getSavedCredentials();
+    if (saved?.email) {
+      setForm((prev) => ({ ...prev, email: saved.email, password: saved.password || '' }));
+      setRememberMe(true);
+    }
+  }, []);
 
   useEffect(() => {
     const checkSession = async () => {
-      const { data } = await supabase.auth.getSession();
+      const { data } = await getSession();
       if (data.session) {
         navigate('/dashboard');
       }
@@ -36,11 +64,21 @@ export default function Login() {
       if (mode === 'register') {
         const { data, error } = await signUpWithEmail({ email: form.email, password: form.password });
         if (error) throw error;
+        if (rememberMe) {
+          saveCredentials(form.email, form.password);
+        } else {
+          clearSavedCredentials();
+        }
         toast.success('Account created. Please verify your email before logging in.');
         setMode('login');
       } else {
         const { data, error } = await signInWithEmail({ email: form.email, password: form.password });
         if (error) throw error;
+        if (rememberMe) {
+          saveCredentials(form.email, form.password);
+        } else {
+          clearSavedCredentials();
+        }
         if (data?.session?.user?.email_confirmed_at) {
           toast.success('Welcome back to AI Gym');
           navigate('/dashboard');
@@ -98,6 +136,13 @@ export default function Login() {
                 <input required type="password" value={form.confirmPassword} onChange={(e) => setForm({ ...form, confirmPassword: e.target.value })} className="w-full bg-transparent outline-none" placeholder="Confirm Password" />
               </label>
             ) : null}
+
+            <label className="flex items-center gap-2 text-sm text-slate-300">
+              <input type="checkbox" checked={rememberMe} onChange={(e) => setRememberMe(e.target.checked)} className="h-4 w-4 rounded border-white/20 bg-black/30" />
+              <span className="flex items-center gap-2">
+                <FiSave /> Save this password locally
+              </span>
+            </label>
           </div>
 
           <button type="submit" className="mt-6 w-full rounded-full bg-gradient-to-r from-cyan-500 to-fuchsia-500 px-4 py-3 font-semibold text-white shadow-[0_0_30px_rgba(34,211,238,0.2)] transition hover:scale-[1.01]">

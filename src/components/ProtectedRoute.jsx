@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
-import { supabase } from '../services/supabase';
+import { getSession, subscribeToAuth } from '../services/supabase';
 
 export default function ProtectedRoute() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -10,7 +10,7 @@ export default function ProtectedRoute() {
     let active = true;
 
     const checkSession = async () => {
-      const { data } = await supabase.auth.getSession();
+      const { data } = await getSession();
       if (active) {
         setIsAuthenticated(Boolean(data.session));
         setLoading(false);
@@ -19,7 +19,7 @@ export default function ProtectedRoute() {
 
     checkSession();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription } } = subscribeToAuth((_event, session) => {
       if (active) {
         setIsAuthenticated(Boolean(session));
         setLoading(false);

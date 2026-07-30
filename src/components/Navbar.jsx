@@ -2,7 +2,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { FiLogOut, FiMenu, FiX } from 'react-icons/fi';
 import { useEffect, useState } from 'react';
-import { signOut, supabase } from '../services/supabase';
+import { getSession, signOut, subscribeToAuth } from '../services/supabase';
 import { toast } from 'react-hot-toast';
 
 const links = [
@@ -24,13 +24,13 @@ export default function Navbar() {
     let active = true;
 
     const loadSession = async () => {
-      const { data } = await supabase.auth.getSession();
+      const { data } = await getSession();
       if (active) setSession(data.session);
     };
 
     loadSession();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, currentSession) => {
+    const { data: { subscription } } = subscribeToAuth((_event, currentSession) => {
       if (active) setSession(currentSession);
     });
 
