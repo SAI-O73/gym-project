@@ -5,7 +5,7 @@ import { FiMail, FiLock, FiUser, FiCheckCircle, FiSave } from 'react-icons/fi';
 import { getSession, signInWithEmail, signUpWithEmail } from '../services/supabase';
 import { toast } from 'react-hot-toast';
 
-const STORAGE_KEY = 'ai-gym-saved-credentials';
+const STORAGE_KEY = 'fit73-saved-credentials';
 
 function getSavedCredentials() {
   try {
@@ -80,7 +80,7 @@ export default function Login() {
           clearSavedCredentials();
         }
         if (data?.session?.user?.email_confirmed_at) {
-          toast.success('Welcome back to AI Gym');
+          toast.success('Welcome back to FIT73');
           navigate('/dashboard');
         } else {
           toast.error('Please verify your email before logging in.');

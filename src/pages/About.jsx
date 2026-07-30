@@ -9,7 +9,7 @@ export default function About() {
   return (
     <div className="min-h-screen bg-black px-4 py-16 text-white sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
-        <SectionHeading eyebrow="About AI Gym" title="A premium training experience built for modern athletes" description="We blend evidence-based coaching, smart nutrition, and AI guidance into one elevated platform." />
+        <SectionHeading eyebrow="About FIT73" title="A premium training experience built for modern athletes" description="We blend evidence-based coaching, smart nutrition, and AI guidance into one elevated platform." />
         <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr]">
           <div className="rounded-[32px] border border-white/10 bg-white/8 p-8 backdrop-blur-xl">
             <h3 className="text-2xl font-semibold">Mission</h3>

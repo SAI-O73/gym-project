@@ -75,7 +75,7 @@ export default function Home() {
             <div>
               <p className="text-sm font-semibold uppercase tracking-[0.35em] text-cyan-300">Performance Metrics</p>
               <h2 className="mt-3 text-3xl font-semibold text-white sm:text-4xl">Track your recovery, body composition, and progress in one place.</h2>
-              <p className="mt-4 text-slate-300">From BMI and protein targets to daily check-ins, AI Gym gives you actionable insights.</p>
+              <p className="mt-4 text-slate-300">From BMI and protein targets to daily check-ins, FIT73 gives you actionable insights.</p>
             </div>
             <div className="grid gap-4 sm:grid-cols-3">
               {[
