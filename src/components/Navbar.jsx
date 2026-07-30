@@ -65,7 +65,7 @@ export default function Navbar() {
             <span className="text-xl font-semibold">AG</span>
           </div>
           <div>
-            <p className="text-sm font-semibold tracking-[0.35em] text-cyan-300">AI GYM</p>
+            <p className="text-sm font-semibold tracking-[0.35em] text-cyan-300">FIT73</p>
             <p className="text-xs text-slate-400">Performance Lab</p>
           </div>
         </Link>
