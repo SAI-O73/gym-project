@@ -12,12 +12,15 @@ export default function AIChat() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!input.trim()) return;
-    const nextMessages = [...messages, { from: 'user', text: input }];
+    const trimmedInput = input.trim();
+    if (!trimmedInput) return;
+
+    const nextMessages = [...messages, { from: 'user', text: trimmedInput }];
     setMessages(nextMessages);
     setInput('');
     setLoading(true);
-    const reply = await askGemini(input);
+
+    const reply = await askGemini(trimmedInput);
     setMessages([...nextMessages, { from: 'bot', text: reply }]);
     setLoading(false);
   };
