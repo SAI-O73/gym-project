@@ -16,6 +16,7 @@ function isValidSupabaseConfig() {
 let supabaseClient = null;
 
 if (isValidSupabaseConfig()) {
+  console.log('✅ Supabase config found, connecting to:', supabaseUrl);
   try {
     supabaseClient = createClient(supabaseUrl, supabaseAnonKey, {
       auth: {
@@ -23,10 +24,18 @@ if (isValidSupabaseConfig()) {
         autoRefreshToken: true,
       },
     });
+    console.log('✅ Supabase client created successfully.');
   } catch (error) {
-    console.error('Supabase client init failed:', error);
+    console.error('❌ Supabase client init failed:', error);
     supabaseClient = null;
   }
+} else {
+  console.error(
+    '❌ Supabase config invalid or missing. URL present:',
+    !!supabaseUrl,
+    '| Key present:',
+    !!supabaseAnonKey
+  );
 }
 
 export const supabase = supabaseClient;
@@ -69,4 +78,3 @@ export function clearSession() {
   if (!supabaseUrl) return;
   localStorage.removeItem('sb-' + supabaseUrl.split('//')[1].split('.')[0] + '-auth-token');
 }
-
