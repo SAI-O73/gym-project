@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { FiSend } from 'react-icons/fi';
 import { askGemini } from '../services/gemini';
+import toast from 'react-hot-toast';
 
 export default function AIChat() {
   const [messages, setMessages] = useState([
@@ -9,20 +10,67 @@ export default function AIChat() {
   ]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
+  const [lastUserMessage, setLastUserMessage] = useState('');
+  const [lastErrorStatus, setLastErrorStatus] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const trimmedInput = input.trim();
     if (!trimmedInput) return;
-
     const nextMessages = [...messages, { from: 'user', text: trimmedInput }];
     setMessages(nextMessages);
     setInput('');
     setLoading(true);
+    setLastUserMessage(trimmedInput);
+    setLastErrorStatus(null);
 
-    const reply = await askGemini(trimmedInput);
-    setMessages([...nextMessages, { from: 'bot', text: reply }]);
-    setLoading(false);
+    try {
+      const reply = await askGemini(trimmedInput);
+      setMessages((m) => [...nextMessages, { from: 'bot', text: reply }]);
+    } catch (err) {
+      const status = err?.status || err?.response?.status;
+      setLastErrorStatus(status || 500);
+      if (status === 429) {
+        toast.error('Rate limit reached. Retrying once in 3 seconds...');
+        await new Promise((r) => setTimeout(r, 3000));
+        try {
+          const retryReply = await askGemini(trimmedInput);
+          setMessages((m) => [...nextMessages, { from: 'bot', text: retryReply }]);
+          setLastErrorStatus(null);
+          setLoading(false);
+          return;
+        } catch (err2) {
+          toast.error('Still rate-limited. Please check billing or try later.');
+          setMessages((m) => [...nextMessages, { from: 'bot', text: 'AI coach is currently rate-limited. Please try again later.' }]);
+          setLoading(false);
+          return;
+        }
+      }
+
+      toast.error('AI coach is unavailable right now.');
+      console.error('AIChat error', err);
+      setMessages((m) => [...nextMessages, { from: 'bot', text: 'The AI coach is unavailable right now.' }]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleRetry = async () => {
+    if (!lastUserMessage) return;
+    setLoading(true);
+    const nextMessages = [...messages, { from: 'user', text: lastUserMessage }];
+    setMessages(nextMessages);
+    try {
+      const reply = await askGemini(lastUserMessage);
+      setMessages((m) => [...nextMessages, { from: 'bot', text: reply }]);
+      setLastErrorStatus(null);
+    } catch (err) {
+      const status = err?.status || err?.response?.status;
+      setLastErrorStatus(status || 500);
+      toast.error('Retry failed. Please check billing or try later.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -48,6 +96,9 @@ export default function AIChat() {
               <button type="submit" className="rounded-full bg-gradient-to-r from-brand-red to-brand-red p-3 text-brand-white">
                 <FiSend />
               </button>
+              {(lastErrorStatus === 429) ? (
+                <button type="button" onClick={handleRetry} className="ml-2 rounded-full border border-brand-white/10 p-2 text-sm text-brand-white">Retry</button>
+              ) : null}
             </div>
           </form>
         </div>
