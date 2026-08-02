@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { FiMail, FiLock, FiUser, FiCheckCircle, FiSave } from 'react-icons/fi';
-import { getSession, signInWithEmail, signUpWithEmail } from '../services/supabase';
+import { getSession, signInWithEmail, signUpWithEmail, sendPasswordReset } from '../services/supabase';
 import { toast } from 'react-hot-toast';
 
 const STORAGE_KEY = 'fit73-saved-credentials';
@@ -30,6 +30,7 @@ export default function Login() {
   const [form, setForm] = useState({ name: '', email: '', password: '', confirmPassword: '' });
   const [loading, setLoading] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
+  const [resetMessage, setResetMessage] = useState('');
 
   useEffect(() => {
     const saved = getSavedCredentials();
@@ -94,81 +95,97 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(34,211,238,0.18),_transparent_30%),radial-gradient(circle_at_bottom_right,_rgba(192,132,252,0.18),_transparent_35%),#000] px-4 py-10 text-white sm:px-6 lg:px-8">
+    <div className={"min-h-screen bg-[radial-gradient(circle_at_top,_rgba(var(--accent-rgb),0.18),_transparent_30%),radial-gradient(circle_at_bottom_right,_rgba(var(--muted-rgb),0.12),_transparent_35%),var(--bg)] px-4 py-10 text-brand-white sm:px-6 lg:px-8"}>
       <div className="mx-auto flex max-w-6xl flex-col items-center justify-center gap-8 lg:flex-row">
         <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} className="max-w-xl text-center lg:text-left">
-          <h1 className="text-4xl font-semibold sm:text-5xl lg:text-6xl">Welcome to your AI-powered training studio.</h1>
-          <p className="mt-5 text-lg text-slate-300">Join elite programs, a digital coach, and progress tracking crafted for your goals.</p>
+          <h1 className="text-4xl font-semibold sm:text-5xl lg:text-6xl float">Welcome to your AI-powered training studio.</h1>
         </motion.div>
 
-        <motion.form initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} onSubmit={handleSubmit} className="w-full max-w-md rounded-[32px] border border-white/10 bg-white/10 p-6 shadow-[0_30px_100px_rgba(0,0,0,0.4)] backdrop-blur-xl sm:p-8">
+          <motion.form initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} onSubmit={handleSubmit} className="relative w-full max-w-md rounded-[32px] border border-brand-white/10 bg-brand-white/10 p-6 shadow-[0_30px_100px_rgba(0,0,0,0.4)] backdrop-blur-xl sm:p-8">
+            <div className="absolute inset-0 -z-10 rounded-[32px] bg-animated" />
           <div className="mb-6 flex items-center justify-between">
             <div>
-              <p className="text-sm text-cyan-300">{mode === 'login' ? 'Welcome Back' : 'Create Account'}</p>
+              <p className="text-sm text-brand-red">{mode === 'login' ? 'Welcome Back' : 'Create Account'}</p>
               <h2 className="text-2xl font-semibold">{mode === 'login' ? 'Sign in to continue' : 'Join the performance lab'}</h2>
             </div>
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-500 to-fuchsia-600">
-              <FiCheckCircle size={20} />
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-brand-red to-brand-red">
+                <FiCheckCircle size={20} className="float-slow" />
             </div>
           </div>
 
+          {resetMessage ? (
+            <div className="mb-4 rounded-md border border-brand-white/10 bg-brand-black/20 px-4 py-3 text-sm text-brand-gray">{resetMessage}</div>
+          ) : null}
+
           {mode === 'register' ? (
             <div className="mb-4 space-y-4">
-              <label className="group flex items-center gap-3 rounded-2xl border border-white/10 bg-black/30 px-4 py-3 transition focus-within:border-cyan-400/60">
-                <FiUser className="text-cyan-300" />
+              <label className="group flex items-center gap-3 rounded-2xl border border-brand-white/10 bg-brand-black/30 px-4 py-3 transition focus-within:border-brand-red/60">
+                <FiUser className="text-brand-red" />
                 <input required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full bg-transparent outline-none" placeholder="Name" />
               </label>
             </div>
           ) : null}
 
           <div className="space-y-4">
-            <label className="group flex items-center gap-3 rounded-2xl border border-white/10 bg-black/30 px-4 py-3 transition focus-within:border-cyan-400/60">
-              <FiMail className="text-cyan-300" />
+            <label className="group flex items-center gap-3 rounded-2xl border border-brand-white/10 bg-brand-black/30 px-4 py-3 transition focus-within:border-brand-red/60">
+              <FiMail className="text-brand-red" />
               <input required type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="w-full bg-transparent outline-none" placeholder="Email" />
             </label>
-            <label className="group flex items-center gap-3 rounded-2xl border border-white/10 bg-black/30 px-4 py-3 transition focus-within:border-cyan-400/60">
-              <FiLock className="text-cyan-300" />
+            <label className="group flex items-center gap-3 rounded-2xl border border-brand-white/10 bg-brand-black/30 px-4 py-3 transition focus-within:border-brand-red/60">
+              <FiLock className="text-brand-red" />
               <input required type="password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} className="w-full bg-transparent outline-none" placeholder="Password" />
             </label>
             {mode === 'register' ? (
-              <label className="group flex items-center gap-3 rounded-2xl border border-white/10 bg-black/30 px-4 py-3 transition focus-within:border-cyan-400/60">
-                <FiLock className="text-cyan-300" />
+              <label className="group flex items-center gap-3 rounded-2xl border border-brand-white/10 bg-brand-black/30 px-4 py-3 transition focus-within:border-brand-red/60">
+                <FiLock className="text-brand-red" />
                 <input required type="password" value={form.confirmPassword} onChange={(e) => setForm({ ...form, confirmPassword: e.target.value })} className="w-full bg-transparent outline-none" placeholder="Confirm Password" />
               </label>
             ) : null}
 
-            <label className="flex items-center gap-2 text-sm text-slate-300">
-              <input type="checkbox" checked={rememberMe} onChange={(e) => setRememberMe(e.target.checked)} className="h-4 w-4 rounded border-white/20 bg-black/30" />
+            <label className="flex items-center gap-2 text-sm text-brand-gray">
+              <input type="checkbox" checked={rememberMe} onChange={(e) => setRememberMe(e.target.checked)} className="h-4 w-4 rounded border-brand-white/20 bg-brand-black/30" />
               <span className="flex items-center gap-2">
                 <FiSave /> Save this password locally
               </span>
             </label>
           </div>
 
-          <button type="submit" className="mt-6 w-full rounded-full bg-gradient-to-r from-cyan-500 to-fuchsia-500 px-4 py-3 font-semibold text-white shadow-[0_0_30px_rgba(34,211,238,0.2)] transition hover:scale-[1.01]">
+          <button
+            type="submit"
+            className="mt-6 w-full rounded-full bg-gradient-to-r from-brand-red to-brand-red px-4 py-3 font-semibold text-brand-white shadow-[0_0_30px_rgba(var(--accent-rgb),0.2)] transition-transform duration-150 hover:scale-105 hover:shadow-[0_10px_40px_rgba(var(--accent-rgb),0.25)] focus:outline-none focus:ring-4 focus:ring-brand-red/30 active:scale-95"
+          >
             {loading ? 'Processing...' : mode === 'login' ? 'Login' : 'Register'}
           </button>
 
-          <div className="mt-4 flex items-center justify-between text-sm text-slate-300">
-            <button type="button" onClick={() => setMode(mode === 'login' ? 'register' : 'login')} className="hover:text-cyan-300">
+          <div className="mt-4 flex items-center justify-between text-sm text-brand-gray">
+            <button type="button" onClick={() => setMode(mode === 'login' ? 'register' : 'login')} className="hover:text-brand-red">
               {mode === 'login' ? 'Create Account' : 'Already have an account?'}
             </button>
-            <button type="button" className="hover:text-cyan-300">Forgot Password</button>
+            <button type="button" onClick={async () => {
+              if (!form.email) {
+                toast('Please enter your account email above to receive a reset link.');
+                return;
+              }
+              try {
+                setLoading(true);
+                setResetMessage('');
+                const redirectTo = window.location.origin + '/login';
+                const { error } = await sendPasswordReset(form.email, redirectTo);
+                if (error) throw error;
+                const msg = 'Check your email to reset your password.';
+                setResetMessage(msg);
+                toast.success('Password reset email sent. Check your inbox.');
+              } catch (err) {
+                const errMsg = err?.message || 'Failed to send reset email';
+                setResetMessage(errMsg);
+                toast.error(errMsg);
+              } finally {
+                setLoading(false);
+              }
+            }} className="hover:text-brand-red">Forgot Password</button>
           </div>
 
-          <div className="mt-6 flex items-center gap-3 text-sm text-slate-400">
-            <div className="h-px flex-1 bg-white/10" />
-            <span>Or continue with</span>
-            <div className="h-px flex-1 bg-white/10" />
-          </div>
-
-          <div className="mt-4 flex justify-center gap-3">
-            {['G', 'f', 'in'].map((item) => (
-              <div key={item} className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-black/20 text-slate-200">
-                {item}
-              </div>
-            ))}
-          </div>
+          {/* Removed social divider and social buttons */}
         </motion.form>
       </div>
     </div>

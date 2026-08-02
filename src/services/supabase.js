@@ -70,6 +70,21 @@ export async function signInWithEmail({ email, password }) {
   return getAuth().signInWithPassword({ email, password });
 }
 
+export async function sendPasswordReset(email, redirectTo) {
+  const auth = getAuth();
+  try {
+    if (typeof auth.resetPasswordForEmail === 'function') {
+      return await auth.resetPasswordForEmail(email, { redirectTo });
+    }
+    if (auth.api && typeof auth.api.resetPasswordForEmail === 'function') {
+      return await auth.api.resetPasswordForEmail(email);
+    }
+    return { data: null, error: { message: 'Supabase client is not available.' } };
+  } catch (error) {
+    return { data: null, error };
+  }
+}
+
 export async function signOut() {
   return getAuth().signOut();
 }

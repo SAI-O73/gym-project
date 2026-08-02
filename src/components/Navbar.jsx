@@ -57,31 +57,31 @@ export default function Navbar() {
     <motion.header
       initial={{ y: -20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      className="sticky top-0 z-40 border-b border-white/10 bg-black/70 backdrop-blur-xl"
+      className="sticky top-0 z-40 border-b border-brand-white/10 bg-brand-black/70 backdrop-blur-xl"
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
         <Link to="/dashboard" className="flex items-center gap-3">
-          <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-400 to-fuchsia-600 shadow-[0_0_30px_rgba(96,165,250,0.35)]">
+          <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-brand-red to-brand-red shadow-[0_0_30px_rgba(var(--accent-rgb),0.35)]">
             <span className="text-xl font-semibold">AG</span>
           </div>
           <div>
-            <p className="text-sm font-semibold tracking-[0.35em] text-cyan-300">FIT73</p>
-            <p className="text-xs text-slate-400">Performance Lab</p>
+            <p className="text-sm font-semibold tracking-[0.35em] text-brand-red">FIT73</p>
+            <p className="text-xs text-brand-gray">Performance Lab</p>
           </div>
         </Link>
 
-        <button className="rounded-full border border-cyan-400/30 p-2 text-cyan-300 lg:hidden" onClick={() => setOpen(!open)}>
+        <button className="rounded-full border border-brand-red/30 p-2 text-brand-red lg:hidden" onClick={() => setOpen(!open)}>
           {open ? <FiX size={20} /> : <FiMenu size={20} />}
         </button>
 
         <nav className="hidden items-center gap-6 lg:flex">
           {links.map((link) => (
-            <Link key={link.to} to={link.to} onClick={(event) => handleProtectedClick(event, link.to)} className="text-sm text-slate-300 transition hover:text-cyan-300">
+            <Link key={link.to} to={link.to} onClick={(event) => handleProtectedClick(event, link.to)} className="text-sm text-brand-gray transition hover:text-brand-red">
               {link.label}
             </Link>
           ))}
           {session ? (
-            <button onClick={handleLogout} className="flex items-center gap-2 rounded-full border border-white/10 bg-white/10 px-4 py-2 text-sm text-slate-200 transition hover:border-cyan-400/40 hover:text-cyan-300">
+            <button onClick={handleLogout} className="flex items-center gap-2 rounded-full border border-brand-white/10 bg-brand-white/10 px-4 py-2 text-sm text-brand-offwhite transition hover:border-brand-red/40 hover:text-brand-red">
               <FiLogOut /> Logout
             </button>
           ) : null}
@@ -89,18 +89,18 @@ export default function Navbar() {
       </div>
 
       {open ? (
-        <div className="border-t border-white/10 bg-black/90 px-4 py-4 lg:hidden">
+        <div className="border-t border-brand-white/10 bg-brand-black/90 px-4 py-4 lg:hidden">
           <div className="flex flex-col gap-3">
             {links.map((link) => (
               <Link key={link.to} to={link.to} onClick={(event) => {
                 setOpen(false);
                 handleProtectedClick(event, link.to);
-              }} className="text-sm text-slate-300">
+              }} className="text-sm text-brand-gray">
                 {link.label}
               </Link>
             ))}
             {session ? (
-              <button onClick={handleLogout} className="flex items-center gap-2 rounded-full border border-white/10 bg-white/10 px-4 py-2 text-sm text-slate-200">
+              <button onClick={handleLogout} className="flex items-center gap-2 rounded-full border border-brand-white/10 bg-brand-white/10 px-4 py-2 text-sm text-brand-offwhite">
                 <FiLogOut /> Logout
               </button>
             ) : null}
