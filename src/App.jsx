@@ -62,7 +62,7 @@ function AnimatedRoutes() {
 function App() {
   return (
     <BrowserRouter>
-      <div className="min-h-screen bg-[#0a0a0a] text-neutral-100 flex flex-col">
+      <div className="min-h-screen bg-brand-black text-brand-offwhite flex flex-col">
         <Navbar />
         <main className="flex-1">
           <AnimatedRoutes />
@@ -71,7 +71,7 @@ function App() {
         <Toaster
           position="top-right"
           toastOptions={{
-            className: 'bg-neutral-900 text-neutral-100 border border-white/10',
+            className: 'bg-brand-black text-brand-offwhite border border-brand-white/10',
             style: { borderRadius: '0.75rem' },
           }}
         />

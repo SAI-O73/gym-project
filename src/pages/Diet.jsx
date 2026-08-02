@@ -9,21 +9,21 @@ const plans = [
 
 export default function Diet() {
   return (
-    <div className="min-h-screen bg-black px-4 py-16 text-white sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-brand-black px-4 py-16 text-brand-white sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <SectionHeading eyebrow="Diet Plans" title="Nutrition strategies that feel effortless" description="Structured meals with precision macro targets and smart food pairing." />
         <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
           {plans.map((plan) => (
-            <div key={plan.title} className="rounded-[28px] border border-white/10 bg-white/8 p-6 backdrop-blur-xl">
+            <div key={plan.title} className="rounded-[28px] border border-brand-white/10 bg-brand-white/8 p-6 backdrop-blur-xl">
               <div className="text-4xl">{plan.icon}</div>
               <h3 className="mt-4 text-xl font-semibold">{plan.title}</h3>
-              <div className="mt-4 space-y-3 text-sm text-slate-300">
-                <div className="flex items-center justify-between rounded-2xl bg-white/10 px-3 py-2"><span>Calories</span><span className="font-semibold text-white">{plan.calories}</span></div>
-                <div className="flex items-center justify-between rounded-2xl bg-white/10 px-3 py-2"><span>Protein</span><span className="font-semibold text-white">{plan.protein}</span></div>
-                <div className="flex items-center justify-between rounded-2xl bg-white/10 px-3 py-2"><span>Carbs</span><span className="font-semibold text-white">{plan.carbs}</span></div>
-                <div className="flex items-center justify-between rounded-2xl bg-white/10 px-3 py-2"><span>Fat</span><span className="font-semibold text-white">{plan.fat}</span></div>
+              <div className="mt-4 space-y-3 text-sm text-brand-gray">
+                <div className="flex items-center justify-between rounded-2xl bg-brand-white/10 px-3 py-2"><span>Calories</span><span className="font-semibold text-brand-white">{plan.calories}</span></div>
+                <div className="flex items-center justify-between rounded-2xl bg-brand-white/10 px-3 py-2"><span>Protein</span><span className="font-semibold text-brand-white">{plan.protein}</span></div>
+                <div className="flex items-center justify-between rounded-2xl bg-brand-white/10 px-3 py-2"><span>Carbs</span><span className="font-semibold text-brand-white">{plan.carbs}</span></div>
+                <div className="flex items-center justify-between rounded-2xl bg-brand-white/10 px-3 py-2"><span>Fat</span><span className="font-semibold text-brand-white">{plan.fat}</span></div>
               </div>
-              <p className="mt-5 text-sm text-slate-400">{plan.meals} meals per day • Adapted for sustainable progress.</p>
+              <p className="mt-5 text-sm text-brand-gray">{plan.meals} meals per day • Adapted for sustainable progress.</p>
             </div>
           ))}
         </div>

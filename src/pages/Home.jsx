@@ -17,7 +17,7 @@ const workouts = [
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-brand-black text-brand-white">
       <HeroSection />
 
       <section className="px-4 py-16 sm:px-6 lg:px-8">
@@ -25,22 +25,22 @@ export default function Home() {
           <SectionHeading eyebrow="Signature Plans" title="Elite nutrition programs" description="Curated for fat loss, muscle gain, and maintenance with premium structure." />
           <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
             {dietPlans.map((plan, index) => (
-              <motion.article initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: index * 0.08 }} key={plan.title} className="overflow-hidden rounded-[28px] border border-white/10 bg-white/8 backdrop-blur-xl">
+              <motion.article initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: index * 0.08 }} key={plan.title} className="overflow-hidden rounded-[28px] border border-brand-white/10 bg-brand-white/8 backdrop-blur-xl">
                 <img src={plan.image} alt={plan.title} className="h-48 w-full object-cover" />
                 <div className="p-6">
                   <div className="mb-4 flex items-center justify-between">
                     <h3 className="text-xl font-semibold">{plan.title}</h3>
-                    <FaAppleAlt className="text-cyan-300" />
+                    <FaAppleAlt className="text-brand-red" />
                   </div>
-                  <div className="grid grid-cols-2 gap-3 text-sm text-slate-300">
-                    <div className="rounded-2xl bg-white/10 p-3"><p className="text-slate-400">Calories</p><p className="font-semibold text-white">{plan.calories}</p></div>
-                    <div className="rounded-2xl bg-white/10 p-3"><p className="text-slate-400">Protein</p><p className="font-semibold text-white">{plan.protein}</p></div>
-                    <div className="rounded-2xl bg-white/10 p-3"><p className="text-slate-400">Carbs</p><p className="font-semibold text-white">{plan.carbs}</p></div>
-                    <div className="rounded-2xl bg-white/10 p-3"><p className="text-slate-400">Fat</p><p className="font-semibold text-white">{plan.fat}</p></div>
+                  <div className="grid grid-cols-2 gap-3 text-sm text-brand-gray">
+                    <div className="rounded-2xl bg-brand-white/10 p-3"><p className="text-brand-gray">Calories</p><p className="font-semibold text-brand-white">{plan.calories}</p></div>
+                    <div className="rounded-2xl bg-brand-white/10 p-3"><p className="text-brand-gray">Protein</p><p className="font-semibold text-brand-white">{plan.protein}</p></div>
+                    <div className="rounded-2xl bg-brand-white/10 p-3"><p className="text-brand-gray">Carbs</p><p className="font-semibold text-brand-white">{plan.carbs}</p></div>
+                    <div className="rounded-2xl bg-brand-white/10 p-3"><p className="text-brand-gray">Fat</p><p className="font-semibold text-brand-white">{plan.fat}</p></div>
                   </div>
-                  <div className="mt-4 flex items-center justify-between text-sm text-slate-400">
+                  <div className="mt-4 flex items-center justify-between text-sm text-brand-gray">
                     <span>{plan.meals} meals/day</span>
-                    <span className="rounded-full border border-cyan-400/30 bg-cyan-400/10 px-3 py-1 text-cyan-300">Premium</span>
+                    <span className="rounded-full border border-brand-red/30 bg-brand-red/10 px-3 py-1 text-brand-red">Premium</span>
                   </div>
                 </div>
               </motion.article>
@@ -54,14 +54,14 @@ export default function Home() {
           <SectionHeading eyebrow="Training Library" title="Home workouts that fit your schedule" description="High-impact sessions with smart progression and recovery guidance." />
           <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
             {workouts.map((workout, index) => (
-              <motion.article initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: index * 0.08 }} key={workout.title} className="overflow-hidden rounded-[28px] border border-white/10 bg-white/8 p-4 backdrop-blur-xl">
+              <motion.article initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: index * 0.08 }} key={workout.title} className="overflow-hidden rounded-[28px] border border-brand-white/10 bg-brand-white/8 p-4 backdrop-blur-xl">
                 <img src={workout.image} alt={workout.title} className="h-44 w-full rounded-[22px] object-cover" />
                 <div className="mt-4 flex items-start justify-between">
                   <div>
                     <h3 className="text-xl font-semibold">{workout.title}</h3>
-                    <p className="mt-2 text-sm text-slate-400">{workout.sets} sets • {workout.reps} reps • {workout.rest} rest</p>
+                    <p className="mt-2 text-sm text-brand-gray">{workout.sets} sets • {workout.reps} reps • {workout.rest} rest</p>
                   </div>
-                  <span className="rounded-full border border-fuchsia-400/30 bg-fuchsia-500/10 px-3 py-1 text-sm text-fuchsia-300">{workout.difficulty}</span>
+                  <span className="rounded-full border border-brand-red/30 bg-brand-red/10 px-3 py-1 text-sm text-brand-red">{workout.difficulty}</span>
                 </div>
               </motion.article>
             ))}
@@ -70,12 +70,12 @@ export default function Home() {
       </section>
 
       <section className="px-4 py-16 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-7xl rounded-[32px] border border-white/10 bg-gradient-to-br from-cyan-500/10 via-white/5 to-fuchsia-500/10 p-8 backdrop-blur-xl">
+        <div className="mx-auto max-w-7xl rounded-[32px] border border-brand-white/10 bg-gradient-to-br from-brand-red/10 via-brand-white/5 to-brand-red/10 p-8 backdrop-blur-xl">
           <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
             <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.35em] text-cyan-300">Performance Metrics</p>
-              <h2 className="mt-3 text-3xl font-semibold text-white sm:text-4xl">Track your recovery, body composition, and progress in one place.</h2>
-              <p className="mt-4 text-slate-300">From BMI and protein targets to daily check-ins, FIT73 gives you actionable insights.</p>
+              <p className="text-sm font-semibold uppercase tracking-[0.35em] text-brand-red">Performance Metrics</p>
+              <h2 className="mt-3 text-3xl font-semibold text-brand-white sm:text-4xl">Track your recovery, body composition, and progress in one place.</h2>
+              <p className="mt-4 text-brand-gray">From BMI and protein targets to daily check-ins, FIT73 gives you actionable insights.</p>
             </div>
             <div className="grid gap-4 sm:grid-cols-3">
               {[
@@ -83,10 +83,10 @@ export default function Home() {
                 { label: 'Protein', value: '145g', icon: <FaAppleAlt /> },
                 { label: 'Recovery', value: '98%', icon: <FaHeartbeat /> },
               ].map((item) => (
-                <div key={item.label} className="rounded-[24px] border border-white/10 bg-black/30 p-5 text-center">
-                  <div className="mb-3 flex justify-center text-cyan-300">{item.icon}</div>
-                  <p className="text-2xl font-semibold text-white">{item.value}</p>
-                  <p className="mt-2 text-sm text-slate-400">{item.label}</p>
+                <div key={item.label} className="rounded-[24px] border border-brand-white/10 bg-brand-black/30 p-5 text-center">
+                  <div className="mb-3 flex justify-center text-brand-red">{item.icon}</div>
+                  <p className="text-2xl font-semibold text-brand-white">{item.value}</p>
+                  <p className="mt-2 text-sm text-brand-gray">{item.label}</p>
                 </div>
               ))}
             </div>
