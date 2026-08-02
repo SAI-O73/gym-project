@@ -71,16 +71,14 @@ export async function signInWithEmail({ email, password }) {
 }
 
 export async function sendPasswordReset(email, redirectTo) {
-  const auth = getAuth();
+  if (!supabase) return { data: null, error: { message: 'Supabase is not configured. Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY.' } };
   try {
-    if (typeof auth.resetPasswordForEmail === 'function') {
-      return await auth.resetPasswordForEmail(email, { redirectTo });
-    }
-    if (auth.api && typeof auth.api.resetPasswordForEmail === 'function') {
-      return await auth.api.resetPasswordForEmail(email);
-    }
-    return { data: null, error: { message: 'Supabase client is not available.' } };
+    // Preferred v2 API
+    const resp = await supabase.auth.resetPasswordForEmail(email, { redirectTo });
+    console.log('sendPasswordReset response:', resp);
+    return resp;
   } catch (error) {
+    console.error('sendPasswordReset error:', error);
     return { data: null, error };
   }
 }

@@ -4,7 +4,6 @@ const plans = [
   { title: 'Weight Loss', calories: '1800', protein: '120g', carbs: '180g', fat: '55g', meals: '4', icon: '🔥' },
   { title: 'Muscle Gain', calories: '2600', protein: '180g', carbs: '320g', fat: '70g', meals: '5', icon: '💪' },
   { title: 'Maintenance', calories: '2200', protein: '145g', carbs: '250g', fat: '60g', meals: '4', icon: '⚖️' },
-  { title: 'Vegetarian', calories: '2000', protein: '130g', carbs: '220g', fat: '60g', meals: '4', icon: '🥗' },
 ];
 
 export default function Diet() {
