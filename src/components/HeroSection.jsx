@@ -11,7 +11,7 @@ export default function HeroSection() {
             AI-powered fitness intelligence
           </p>
           <h1 className="text-4xl font-semibold leading-tight text-brand-white sm:text-5xl lg:text-7xl">
-            Transform your body with FIT73 <span className="bg-gradient-to-r from-brand-red to-brand-red bg-clip-text text-transparent">AI precision</span>.
+            Transform your body with FIT73 <span className="bg-gradient-to-r from-brand-red to-brand-red bg-clip-text text-transparent">AI precision</span>
           </h1>
           <p className="mt-6 max-w-2xl text-lg text-brand-gray sm:text-xl">
             Personalized diets, adaptive workout plans, and a coach that evolves with your progress.
