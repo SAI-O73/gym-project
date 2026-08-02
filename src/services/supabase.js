@@ -1,21 +1,28 @@
 import { createClient } from '@supabase/supabase-js';
 
-const BUILT_SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || '';
-const BUILT_SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
-
 function getRuntimeEnv(varName) {
-  if (typeof window !== 'undefined' && window.__env__ && window.__env__[varName]) {
-    return window.__env__[varName];
+  if (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env[varName]) {
+    return import.meta.env[varName];
   }
+
+  if (typeof window !== 'undefined') {
+    if (window.__env__ && window.__env__[varName]) {
+      return window.__env__[varName];
+    }
+    if (window[varName]) {
+      return window[varName];
+    }
+  }
+
   return '';
 }
 
 function getSupabaseUrl() {
-  return getRuntimeEnv('VITE_SUPABASE_URL') || BUILT_SUPABASE_URL;
+  return getRuntimeEnv('VITE_SUPABASE_URL');
 }
 
 function getSupabaseAnonKey() {
-  return getRuntimeEnv('VITE_SUPABASE_ANON_KEY') || BUILT_SUPABASE_ANON_KEY;
+  return getRuntimeEnv('VITE_SUPABASE_ANON_KEY');
 }
 
 function isValidSupabaseConfig() {
@@ -91,8 +98,8 @@ function createSupabaseClientInstance() {
   }
 }
 
-let supabaseClient = null;
-export let supabase = null;
+let supabaseClient = createSupabaseClientInstance();
+export let supabase = supabaseClient;
 
 function ensureSupabaseClient() {
   if (!supabase) {
@@ -137,11 +144,10 @@ export function getSupabaseClient() {
 }
 
 export async function sendPasswordReset(email, redirectTo) {
-  const client = ensureSupabaseClient();
-  if (!client) return { data: null, error: { message: 'Supabase is not configured. Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY.' } };
+  if (!supabase) return { data: null, error: { message: 'Supabase is not configured. Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY.' } };
   try {
     // Preferred v2 API
-    const resp = await client.auth.resetPasswordForEmail(email, { redirectTo });
+    const resp = await supabase.auth.resetPasswordForEmail(email, { redirectTo });
     console.log('sendPasswordReset response:', resp);
     return resp;
   } catch (error) {
@@ -155,7 +161,6 @@ export async function signOut() {
 }
 
 export function clearSession() {
-  const supabaseUrl = getSupabaseUrl();
-  if (!supabaseUrl || typeof window === 'undefined') return;
+  if (!supabaseUrl) return;
   localStorage.removeItem('sb-' + supabaseUrl.split('//')[1].split('.')[0] + '-auth-token');
 }

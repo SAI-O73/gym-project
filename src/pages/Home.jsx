@@ -163,6 +163,13 @@ export default function Home() {
 
       <section className="px-4 py-16 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
+          <SectionHeading eyebrow="Home Stats" title="Calculate your daily energy need" description="Enter your weight, height, age, and gender to estimate your BMR instantly." />
+          <BmrWidget />
+        </div>
+      </section>
+
+      <section className="px-4 py-16 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl">
           <SectionHeading eyebrow="Signature Plans" title="Elite nutrition programs" description="Curated for fat loss, muscle gain, and maintenance with fit73 premium structure." />
           <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
             {dietPlans.map((plan, index) => (
