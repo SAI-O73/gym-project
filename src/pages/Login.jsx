@@ -169,12 +169,19 @@ export default function Login() {
               try {
                 setLoading(true);
                 setResetMessage('');
-                const redirectTo = window.location.origin + '/login';
-                const { error } = await sendPasswordReset(form.email, redirectTo);
-                if (error) throw error;
-                const msg = 'Check your email to reset your password.';
-                setResetMessage(msg);
-                toast.success('Password reset email sent. Check your inbox.');
+                const envRedirect = import.meta.env.VITE_RESET_REDIRECT;
+                const redirectTo = envRedirect && envRedirect.length > 0 ? envRedirect : window.location.origin + '/login';
+                const { data, error } = await sendPasswordReset(form.email, redirectTo);
+                if (error) {
+                  const errMsg = error.message || 'Failed to send reset email';
+                  setResetMessage(errMsg);
+                  toast.error(errMsg);
+                } else {
+                  const msg = 'Check your email to reset your password. If you do not see it, check your spam folder.';
+                  setResetMessage(msg);
+                  toast.success('Password reset email sent. Check your inbox.');
+                  console.log('Password reset data:', data);
+                }
               } catch (err) {
                 const errMsg = err?.message || 'Failed to send reset email';
                 setResetMessage(errMsg);

@@ -6,10 +6,9 @@ import { getSession, signOut, subscribeToAuth } from '../services/supabase';
 import { toast } from 'react-hot-toast';
 
 const links = [
-  { label: 'Home', to: '/' },
+  { label: 'Home', to: '/home' },
   { label: 'Diet Plans', to: '/diet' },
-  { label: 'Protein', to: '/protein' },
-  { label: 'BMI', to: '/bmi' },
+  { label: 'BMR', to: '/bmr' },
   { label: 'AI Coach', to: '/ai' },
   { label: 'Contact', to: '/contact' },
   { label: 'Profile', to: '/profile' },

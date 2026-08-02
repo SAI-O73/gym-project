@@ -7,8 +7,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import Login from './pages/Login';
 import Home from './pages/Home';
 import Diet from './pages/Diet';
-import Protein from './pages/Protein';
-import BMI from './pages/BMI';
+import BMR from './pages/BMR';
 import AIChat from './pages/AIChat';
 import Contact from './pages/Contact';
 import Dashboard from './pages/Dashboard';
@@ -46,11 +45,10 @@ function AnimatedRoutes() {
         <Route element={<ProtectedRoute />}>
           <Route path="/home" element={<AnimatedPage><Home /></AnimatedPage>} />
           <Route path="/diet" element={<AnimatedPage><Diet /></AnimatedPage>} />
-          <Route path="/protein" element={<AnimatedPage><Protein /></AnimatedPage>} />
-          <Route path="/bmi" element={<AnimatedPage><BMI /></AnimatedPage>} />
+          <Route path="/bmr" element={<AnimatedPage><BMR /></AnimatedPage>} />
           <Route path="/ai" element={<AnimatedPage><AIChat /></AnimatedPage>} />
           <Route path="/contact" element={<AnimatedPage><Contact /></AnimatedPage>} />
-          <Route path="/dashboard" element={<AnimatedPage><Dashboard /></AnimatedPage>} />
+          <Route path="/dashboard" element={<Navigate to="/home" replace />} />
           <Route path="/profile" element={<AnimatedPage><Profile /></AnimatedPage>} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
