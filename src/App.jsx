@@ -7,6 +7,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import Login from './pages/Login';
 import Home from './pages/Home';
 import Diet from './pages/Diet';
+import DietPlan from './pages/DietPlan';
 import BMR from './pages/BMR';
 import AIChat from './pages/GymAssistant';
 import Contact from './pages/Contact';
@@ -45,6 +46,7 @@ function AnimatedRoutes() {
         <Route element={<ProtectedRoute />}>
           <Route path="/home" element={<AnimatedPage><Home /></AnimatedPage>} />
           <Route path="/diet" element={<AnimatedPage><Diet /></AnimatedPage>} />
+          <Route path="/diet-plan/:planName" element={<AnimatedPage><DietPlan /></AnimatedPage>} />
           <Route path="/bmr" element={<AnimatedPage><BMR /></AnimatedPage>} />
           <Route path="/ai" element={<AnimatedPage><AIChat /></AnimatedPage>} />
           <Route path="/contact" element={<AnimatedPage><Contact /></AnimatedPage>} />

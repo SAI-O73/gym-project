@@ -3,6 +3,7 @@ import SectionHeading from '../components/SectionHeading';
 import { motion } from 'framer-motion';
 import { FaDumbbell, FaAppleAlt, FaHeartbeat, FaRunning } from 'react-icons/fa';
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 const dietPlans = [
   { title: 'Weight Loss', calories: '1800', protein: '120g', carbs: '180g', fat: '55g', meals: '4', image: 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=800&q=80' },
@@ -181,7 +182,7 @@ export default function Home() {
                   </div>
                   <div className="mt-4 flex items-center justify-between text-sm text-brand-gray">
                     <span>{plan.meals} meals/day</span>
-                    <span className="rounded-full border border-brand-red/30 bg-brand-red/10 px-3 py-1 text-brand-red">Enter</span>
+                    <Link to={`/diet-plan/${encodeURIComponent(plan.title)}`} className="rounded-full border border-brand-red/30 bg-brand-red/10 px-3 py-1 text-brand-red transition hover:bg-brand-red hover:text-brand-white">Enter</Link>
                   </div>
                 </div>
               </motion.article>
