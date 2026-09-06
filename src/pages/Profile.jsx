@@ -58,6 +58,7 @@ export default function Profile() {
 
     try {
       localStorage.setItem('fit73-profile', JSON.stringify(profile));
+      window.dispatchEvent(new CustomEvent('fit73-profile-updated', { detail: profile }));
       const { error: remoteError } = await updateUserMetadata(profile);
       if (remoteError) throw remoteError;
       setSaved(true);
@@ -80,9 +81,9 @@ export default function Profile() {
   return (
     <div className="min-h-screen bg-brand-black px-4 py-16 text-brand-white sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
-        <SectionHeading eyebrow="Profile" title="Own your metrics" description="Update your profile and keep your dashboard aligned with your goals." />
-        <form onSubmit={handleSubmit} className="rounded-[32px] border border-brand-white/10 bg-brand-white/8 p-8 backdrop-blur-xl">
-          <div className="mb-6 flex flex-col items-center gap-4 sm:flex-row">
+        <SectionHeading eyebrow="Profile" title="Own your metrics" description="Keep your body data, goals, and nutrition targets in one place." />
+        <form onSubmit={handleSubmit} className="rounded-[32px] border border-brand-white/10 bg-brand-white/8 p-6 backdrop-blur-xl sm:p-8">
+          <div className="mb-8 flex flex-col items-center gap-5 rounded-3xl border border-brand-white/10 bg-brand-black/25 p-5 sm:flex-row">
             {profile.image ? (
               <img src={profile.image} alt="Profile" className="h-24 w-24 rounded-full border-2 border-brand-red/40 object-cover" />
             ) : (
@@ -100,23 +101,32 @@ export default function Profile() {
               </label>
             ) : null}
           </div>
-          <div className="grid gap-4 md:grid-cols-2">
-            <input value={profile.full_name || ''} onChange={(e) => setProfile({ ...profile, full_name: e.target.value })} placeholder="Name" required className="rounded-2xl border border-brand-white/10 bg-brand-black/30 px-4 py-3 outline-none" />
-            <input type="email" value={profile.email || ''} onChange={(e) => setProfile({ ...profile, email: e.target.value })} placeholder="Email" required className="rounded-2xl border border-brand-white/10 bg-brand-black/30 px-4 py-3 outline-none" />
-            <input value={profile.weight || ''} onChange={(e) => setProfile({ ...profile, weight: e.target.value })} placeholder="Weight (kg)" required className="rounded-2xl border border-brand-white/10 bg-brand-black/30 px-4 py-3 outline-none" />
-            <input value={profile.height || ''} onChange={(e) => setProfile({ ...profile, height: e.target.value })} placeholder="Height (cm)" required className="rounded-2xl border border-brand-white/10 bg-brand-black/30 px-4 py-3 outline-none" />
-            <input value={profile.age || ''} onChange={(e) => setProfile({ ...profile, age: e.target.value })} placeholder="Age" required className="rounded-2xl border border-brand-white/10 bg-brand-black/30 px-4 py-3 outline-none" />
-            <select value={profile.gender || 'male'} onChange={(e) => setProfile({ ...profile, gender: e.target.value })} required className="rounded-2xl border border-brand-white/10 bg-brand-black/30 px-4 py-3 outline-none">
-              <option value="male">Male</option>
-              <option value="female">Female</option>
-            </select>
-            <select value={profile.goal || 'Maintenance'} onChange={(e) => setProfile({ ...profile, goal: e.target.value })} required className="rounded-2xl border border-brand-white/10 bg-brand-black/30 px-4 py-3 outline-none md:col-span-2">
-              <option>Weight Loss</option>
-              <option>Muscle Gain</option>
-              <option>Maintenance</option>
-            </select>
+          <div className="mb-4 flex items-center justify-between border-b border-brand-white/10 pb-4">
+            <div>
+              <h2 className="text-xl font-semibold">Personal details</h2>
+              <p className="mt-1 text-sm text-brand-gray">These values personalize your BMR and diet plans.</p>
+            </div>
           </div>
-          <button type="submit" className="mt-6 rounded-full bg-gradient-to-r from-brand-red to-brand-red px-6 py-3 font-semibold">Save Profile</button>
+          <div className="grid gap-4 md:grid-cols-2">
+            <label className="space-y-2 text-sm text-brand-gray">Full name<input value={profile.full_name || ''} onChange={(e) => setProfile({ ...profile, full_name: e.target.value })} placeholder="Your name" required className="w-full rounded-2xl border border-brand-white/10 bg-brand-black/30 px-4 py-3 text-brand-white outline-none transition focus:border-brand-red/60 focus:ring-2 focus:ring-brand-red/20" /></label>
+            <label className="space-y-2 text-sm text-brand-gray">Email<input type="email" value={profile.email || ''} onChange={(e) => setProfile({ ...profile, email: e.target.value })} placeholder="you@example.com" required className="w-full rounded-2xl border border-brand-white/10 bg-brand-black/30 px-4 py-3 text-brand-white outline-none transition focus:border-brand-red/60 focus:ring-2 focus:ring-brand-red/20" /></label>
+            <label className="space-y-2 text-sm text-brand-gray">Weight (kg)<input value={profile.weight || ''} onChange={(e) => setProfile({ ...profile, weight: e.target.value })} placeholder="e.g. 75" required className="w-full rounded-2xl border border-brand-white/10 bg-brand-black/30 px-4 py-3 text-brand-white outline-none transition focus:border-brand-red/60 focus:ring-2 focus:ring-brand-red/20" /></label>
+            <label className="space-y-2 text-sm text-brand-gray">Height (cm)<input value={profile.height || ''} onChange={(e) => setProfile({ ...profile, height: e.target.value })} placeholder="e.g. 180" required className="w-full rounded-2xl border border-brand-white/10 bg-brand-black/30 px-4 py-3 text-brand-white outline-none transition focus:border-brand-red/60 focus:ring-2 focus:ring-brand-red/20" /></label>
+            <label className="space-y-2 text-sm text-brand-gray">Age<input value={profile.age || ''} onChange={(e) => setProfile({ ...profile, age: e.target.value })} placeholder="e.g. 25" required className="w-full rounded-2xl border border-brand-white/10 bg-brand-black/30 px-4 py-3 text-brand-white outline-none transition focus:border-brand-red/60 focus:ring-2 focus:ring-brand-red/20" /></label>
+            <label className="space-y-2 text-sm text-brand-gray">Gender<select value={profile.gender || 'male'} onChange={(e) => setProfile({ ...profile, gender: e.target.value })} required style={{ colorScheme: 'dark' }} className="w-full rounded-2xl border border-brand-white/10 bg-brand-black/30 px-4 py-3 text-brand-white outline-none transition focus:border-brand-red/60 focus:ring-2 focus:ring-brand-red/20">
+              <option value="male" className="bg-brand-black text-brand-white">Male</option>
+              <option value="female" className="bg-brand-black text-brand-white">Female</option>
+            </select></label>
+            <label className="space-y-2 text-sm text-brand-gray md:col-span-2">Primary goal<select value={profile.goal || 'Maintenance'} onChange={(e) => setProfile({ ...profile, goal: e.target.value })} required style={{ colorScheme: 'dark' }} className="w-full rounded-2xl border border-brand-white/10 bg-brand-black/30 px-4 py-3 text-brand-white outline-none transition focus:border-brand-red/60 focus:ring-2 focus:ring-brand-red/20">
+              <option className="bg-brand-black text-brand-white">Weight Loss</option>
+              <option className="bg-brand-black text-brand-white">Muscle Gain</option>
+              <option className="bg-brand-black text-brand-white">Maintenance</option>
+            </select></label>
+          </div>
+          <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
+            <button type="submit" className="rounded-full bg-brand-red px-6 py-3 font-semibold transition hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-brand-red/40">Save Profile</button>
+            <span className="text-xs text-brand-gray">Your profile powers your personalized diet targets.</span>
+          </div>
           {error ? <p className="mt-4 text-sm text-red-300">{error}</p> : null}
           {saved ? <p className="mt-4 text-sm text-brand-red">Profile updated locally for this session.</p> : null}
         </form>

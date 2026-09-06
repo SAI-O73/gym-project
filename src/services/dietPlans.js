@@ -16,6 +16,24 @@ const proteinMultipliers = {
   Maintenance: 1.6,
 };
 
+export function getDietStats(profile, homeStats) {
+  const source = profile?.weight && profile?.height && profile?.age ? profile : homeStats;
+  if (!source?.weight || !source?.height || !source?.age) return null;
+
+  const weight = Number(source.weight);
+  const height = Number(source.height);
+  const age = Number(source.age);
+  if (weight <= 0 || height <= 0 || age <= 0) return null;
+
+  return {
+    ...source,
+    weight,
+    height,
+    age,
+    bmr: Math.round(10 * weight + 6.25 * height - 5 * age + (source.gender === 'male' ? 5 : -161)),
+  };
+}
+
 export function getPersonalizedDietPlans(homeStats) {
   return baseDietPlans.map((plan) => {
     if (!homeStats?.bmr || !homeStats?.weight) return plan;

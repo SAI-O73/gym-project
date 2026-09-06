@@ -52,6 +52,11 @@ body {
   background: #000;
 }
 
+select option {
+  background-color: #000;
+  color: #fff;
+}
+
 #root {
   min-height: 100vh;
 }

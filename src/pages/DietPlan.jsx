@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import { FaAppleAlt, FaArrowLeft } from 'react-icons/fa';
 import { Link, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { getPersonalizedDietPlan } from '../services/dietPlans';
+import { getDietStats, getPersonalizedDietPlan } from '../services/dietPlans';
 
 const planFocus = {
   'Weight Loss': 'A balanced calorie deficit designed for steady, sustainable fat loss.',
@@ -67,20 +67,28 @@ const listedProtein = weightLossMeals.reduce((total, [, , , , protein]) => total
 export default function DietPlan() {
   const { planName } = useParams();
   const planTitle = decodeURIComponent(planName || 'Weight Loss');
-  const [homeStats, setHomeStats] = useState(null);
+  const [dietStats, setDietStats] = useState(null);
 
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem('fit73-home-stats');
-      if (raw) setHomeStats(JSON.parse(raw));
-    } catch {
-      setHomeStats(null);
-    }
+    const loadStats = (profileOverride) => {
+      try {
+        const profile = profileOverride || JSON.parse(localStorage.getItem('fit73-profile') || 'null');
+        const homeStats = JSON.parse(localStorage.getItem('fit73-home-stats') || 'null');
+        setDietStats(getDietStats(profile, homeStats));
+      } catch {
+        setDietStats(null);
+      }
+    };
+
+    loadStats();
+    const handleProfileUpdate = (event) => loadStats(event.detail);
+    window.addEventListener('fit73-profile-updated', handleProfileUpdate);
+    return () => window.removeEventListener('fit73-profile-updated', handleProfileUpdate);
   }, []);
 
   const selectedPlanTitle = planFocus[planTitle] ? planTitle : 'Weight Loss';
   const plan = {
-    ...getPersonalizedDietPlan(selectedPlanTitle, homeStats),
+    ...getPersonalizedDietPlan(selectedPlanTitle, dietStats),
     focus: planFocus[selectedPlanTitle],
   };
   const isWeightLoss = selectedPlanTitle === 'Weight Loss';
@@ -111,7 +119,7 @@ export default function DietPlan() {
               <FaAppleAlt className="mt-2 text-3xl text-brand-red" />
             </div>
 
-            <p className="mt-6 max-w-xl text-lg leading-8 text-brand-gray">{plan.focus} {homeStats?.bmr ? 'Targets are personalized from your Home BMR.' : 'Calculate your BMR on Home to personalize this plan.'}</p>
+            <p className="mt-6 max-w-xl text-lg leading-8 text-brand-gray">{plan.focus} {dietStats?.bmr ? 'Targets are personalized from your saved profile.' : 'Save your profile or calculate your BMR on Home to personalize this plan.'}</p>
 
             <div className="mt-8 grid gap-3 sm:grid-cols-2">
               {[
