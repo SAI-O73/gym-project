@@ -19,7 +19,7 @@ export default function HeroSection() {
           <img
             src="https://i.pinimg.com/736x/19/c7/94/19c794e6ab55ee9cde857a9c48577ec0.jpg"
             alt="Strength training"
-            className="relative h-[280px] w-full rounded-[20px] border border-brand-white/10 bg-brand-black object-contain shadow-[0_20px_80px_rgba(0,0,0,0.4)] sm:h-[360px] sm:rounded-[28px] lg:h-[450px] lg:rounded-[32px]"
+            className="relative mx-auto block h-[280px] max-w-full overflow-hidden rounded-[20px] border border-brand-white/10 bg-brand-black object-contain object-center p-2 shadow-[0_20px_80px_rgba(0,0,0,0.4)] sm:h-[360px] sm:rounded-[28px] sm:p-3 lg:h-[450px] lg:rounded-[32px]"
           />
         </motion.div>
       </div>
