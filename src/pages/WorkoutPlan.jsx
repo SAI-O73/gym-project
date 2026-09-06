@@ -27,7 +27,11 @@ export default function WorkoutPlan() {
             <FaDumbbell className="mt-2 text-3xl text-brand-red" />
           </div>
           <p className="mt-6 text-lg leading-8 text-brand-gray">{workout.focus}</p>
-          {workout.image ? <img src={workout.image} alt={`${title} workout`} className="mt-6 h-auto w-full rounded-xl border border-brand-white/10 bg-brand-black object-contain" /> : null}
+          {workout.image ? (
+            <div className="mt-6 overflow-hidden rounded-xl border border-brand-white/10 bg-brand-black p-2">
+              <img src={workout.image} alt={`${title} workout`} className="mx-auto block max-h-[720px] w-full object-contain" />
+            </div>
+          ) : null}
           <div className="mt-8 grid gap-3 sm:grid-cols-2">
             {[
               ['Sets', workout.sets],
