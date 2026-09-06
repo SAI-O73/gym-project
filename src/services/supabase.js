@@ -119,6 +119,7 @@ function getAuth() {
     onAuthStateChange: () => ({ data: { subscription: { unsubscribe() {} } } }),
     signUp: async () => ({ data: null, error: { message: 'Supabase client is not available.' } }),
     signInWithPassword: async () => ({ data: null, error: { message: 'Supabase client is not available.' } }),
+    signInWithOAuth: async () => ({ data: null, error: { message: 'Supabase client is not available.' } }),
     updateUser: async () => ({ data: null, error: { message: 'Supabase client is not available.' } }),
     signOut: async () => ({ error: null }),
   };
@@ -142,6 +143,21 @@ export async function signUpWithEmail({ email, password, redirectTo }) {
 
 export async function signInWithEmail({ email, password }) {
   return getAuth().signInWithPassword({ email, password });
+}
+
+export async function signInWithGoogle(redirectTo) {
+  const client = ensureSupabaseClient();
+  if (!client) return { data: null, error: { message: 'Supabase client is not available.' } };
+  return client.auth.signInWithOAuth({
+    provider: 'google',
+    options: { redirectTo: redirectTo || `${window.location.origin}/home` },
+  });
+}
+
+export async function updatePassword(password) {
+  const client = ensureSupabaseClient();
+  if (!client) return { data: null, error: { message: 'Supabase client is not available.' } };
+  return client.auth.updateUser({ password });
 }
 
 export async function updateUserMetadata(profile) {

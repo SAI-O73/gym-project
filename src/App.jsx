@@ -15,6 +15,7 @@ import Dashboard from './pages/Dashboard';
 import Profile from './pages/Profile';
 import AuthConfirmed from './pages/AuthConfirmed';
 import WorkoutPlan from './pages/WorkoutPlan';
+import ResetPassword from './pages/ResetPassword';
 
 const pageVariants = {
   initial: { opacity: 0, y: 12 },
@@ -45,6 +46,8 @@ function AnimatedRoutes() {
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
         <Route path="/" element={<AnimatedPage><Login /></AnimatedPage>} />
+        <Route path="/login" element={<AnimatedPage><Login /></AnimatedPage>} />
+        <Route path="/reset-password" element={<AnimatedPage><ResetPassword /></AnimatedPage>} />
         <Route path="/auth/confirmed" element={<AnimatedPage><AuthConfirmed /></AnimatedPage>} />
         <Route element={<ProtectedRoute />}>
           <Route path="/home" element={<AnimatedPage><Home /></AnimatedPage>} />
