@@ -47,6 +47,7 @@ function BmrWidget() {
     const result = 10 * w + 6.25 * h - 5 * a + (gender === 'male' ? 5 : -161);
     const rounded = Math.round(result);
     setBmr(rounded);
+    localStorage.setItem('fit73-home-stats', JSON.stringify({ weight: w, height: h, age: a, gender, bmr: rounded }));
   };
 
   const profileBmr = (() => {

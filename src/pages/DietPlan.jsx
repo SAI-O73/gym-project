@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { FaAppleAlt, FaArrowLeft } from 'react-icons/fa';
 import { Link, useParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 
 const plans = {
   'Weight Loss': {
@@ -86,7 +87,31 @@ const listedProtein = weightLossMeals.reduce((total, [, , , , protein]) => total
 export default function DietPlan() {
   const { planName } = useParams();
   const planTitle = decodeURIComponent(planName || 'Weight Loss');
-  const plan = plans[planTitle] || plans['Weight Loss'];
+  const [homeStats, setHomeStats] = useState(null);
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem('fit73-home-stats');
+      if (raw) setHomeStats(JSON.parse(raw));
+    } catch {
+      setHomeStats(null);
+    }
+  }, []);
+
+  const basePlan = plans[planTitle] || plans['Weight Loss'];
+  const plan = homeStats?.bmr && homeStats?.weight ? {
+    ...basePlan,
+    calories: String(Math.max(1200, Math.round((homeStats.bmr * 1.4 + {
+      'Weight Loss': -400,
+      'Muscle Gain': 300,
+      Maintenance: 0,
+    }[planTitle]) / 50) * 50)),
+    protein: `${Math.round(homeStats.weight * {
+      'Weight Loss': 1.6,
+      'Muscle Gain': 2,
+      Maintenance: 1.6,
+    }[planTitle])}g`,
+  } : basePlan;
   const isWeightLoss = planTitle === 'Weight Loss';
   const isMuscleGain = planTitle === 'Muscle Gain';
   const isMaintenance = planTitle === 'Maintenance';
@@ -115,7 +140,7 @@ export default function DietPlan() {
               <FaAppleAlt className="mt-2 text-3xl text-brand-red" />
             </div>
 
-            <p className="mt-6 max-w-xl text-lg leading-8 text-brand-gray">{plan.focus}</p>
+            <p className="mt-6 max-w-xl text-lg leading-8 text-brand-gray">{plan.focus} {homeStats?.bmr ? 'Targets are personalized from your Home BMR.' : 'Calculate your BMR on Home to personalize this plan.'}</p>
 
             <div className="mt-8 grid gap-3 sm:grid-cols-2">
               {[

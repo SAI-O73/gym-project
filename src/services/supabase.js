@@ -119,6 +119,7 @@ function getAuth() {
     onAuthStateChange: () => ({ data: { subscription: { unsubscribe() {} } } }),
     signUp: async () => ({ data: null, error: { message: 'Supabase client is not available.' } }),
     signInWithPassword: async () => ({ data: null, error: { message: 'Supabase client is not available.' } }),
+    updateUser: async () => ({ data: null, error: { message: 'Supabase client is not available.' } }),
     signOut: async () => ({ error: null }),
   };
 }
@@ -137,6 +138,10 @@ export async function signUpWithEmail({ email, password }) {
 
 export async function signInWithEmail({ email, password }) {
   return getAuth().signInWithPassword({ email, password });
+}
+
+export async function updateUserMetadata(profile) {
+  return getAuth().updateUser({ data: { profile } });
 }
 
 export function getSupabaseClient() {
