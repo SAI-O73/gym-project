@@ -2,9 +2,9 @@ import { Link, useParams } from 'react-router-dom';
 import { FaArrowLeft, FaDumbbell } from 'react-icons/fa';
 
 const workouts = {
-  Chest: { sets: '4', reps: '10-12', rest: '60s', difficulty: 'Intermediate', focus: 'Build pressing strength and controlled chest volume.', image: 'https://i.pinimg.com/736x/ab/66/73/ab66730e17864c56a6f932c86de053d4.jpg' },
-  Back: { sets: '4', reps: '8-10', rest: '75s', difficulty: 'Advanced', focus: 'Develop back strength with steady pulling mechanics.', image: 'https://i.pinimg.com/736x/cc/0a/da/cc0ada81bd8f5f91bc6133a35436563d.jpg' },
-  Legs: { sets: '5', reps: '8-12', rest: '90s', difficulty: 'Advanced', focus: 'Train lower-body power with strong, repeatable technique.', image: 'https://i.pinimg.com/736x/c1/c4/86/c1c486b9f4bbc17755131504ea00a04d.jpg' },
+  Chest: { sets: '4', reps: '10-12', rest: '60s', difficulty: 'Intermediate', focus: 'Build pressing strength and controlled chest volume.', image: 'https://i.pinimg.com/736x/e0/21/0f/e0210f5fcfea719f89dc7b2ca10230a8.jpg' },
+  Back: { sets: '4', reps: '8-10', rest: '75s', difficulty: 'Advanced', focus: 'Develop back strength with steady pulling mechanics.', image: 'https://i.pinimg.com/736x/95/5c/8c/955c8c993cea76c6279618bcaecd84e9.jpg' },
+  Legs: { sets: '5', reps: '8-12', rest: '90s', difficulty: 'Advanced', focus: 'Train lower-body power with strong, repeatable technique.', image: 'https://i.pinimg.com/736x/66/33/f5/6633f5c0fc8a8a5fbf78c109d07d0e6b.jpg' },
 };
 
 export default function WorkoutPlan() {
