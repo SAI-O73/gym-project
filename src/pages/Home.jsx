@@ -13,9 +13,9 @@ const dietPlanImages = {
 };
 
 const workouts = [
-  { title: 'Chest', sets: '4', reps: '10-12', rest: '60s', difficulty: 'Intermediate', image: 'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?auto=format&fit=crop&w=800&q=80' },
-  { title: 'Back', sets: '4', reps: '8-10', rest: '75s', difficulty: 'Advanced', image: 'https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=800&q=80' },
-  { title: 'Legs', sets: '5', reps: '8-12', rest: '90s', difficulty: 'Advanced', image: 'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?auto=format&fit=crop&w=800&q=80' },
+  { title: 'Chest', sets: '4', reps: '10-12', rest: '60s', difficulty: 'Intermediate', image: 'https://i.pinimg.com/736x/ab/66/73/ab66730e17864c56a6f932c86de053d4.jpg' },
+  { title: 'Back', sets: '4', reps: '8-10', rest: '75s', difficulty: 'Advanced', image: 'https://i.pinimg.com/736x/cc/0a/da/cc0ada81bd8f5f91bc6133a35436563d.jpg' },
+  { title: 'Legs', sets: '5', reps: '8-12', rest: '90s', difficulty: 'Advanced', image: 'https://i.pinimg.com/736x/c1/c4/86/c1c486b9f4bbc17755131504ea00a04d.jpg' },
 ];
 
 function BmrWidget() {
@@ -248,7 +248,7 @@ export default function Home() {
           <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
             {dietPlans.map((plan, index) => (
               <motion.article initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: index * 0.08 }} key={plan.title} className="overflow-hidden rounded-[28px] border border-brand-white/10 bg-brand-white/8 backdrop-blur-xl">
-                <img src={plan.image} alt={plan.title} className="h-48 w-full object-cover" />
+                <img src={plan.image} alt={plan.title} className="h-48 w-full rounded-xl border border-brand-white/10 object-cover" />
                 <div className="p-6">
                   <div className="mb-4 flex items-center justify-between">
                     <h3 className="text-xl font-semibold">{plan.title}</h3>
@@ -277,13 +277,13 @@ export default function Home() {
           <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
             {workouts.map((workout, index) => (
               <motion.article initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: index * 0.08 }} key={workout.title} className="overflow-hidden rounded-[28px] border border-brand-white/10 bg-brand-white/8 p-4 backdrop-blur-xl">
-                <img src={workout.image} alt={workout.title} className="h-44 w-full rounded-[22px] object-cover" />
+                <img src={workout.image} alt={workout.title} className="h-56 w-full rounded-xl border border-brand-white/10 bg-brand-black object-contain" />
                 <div className="mt-4 flex items-start justify-between">
                   <div>
                     <h3 className="text-xl font-semibold">{workout.title}</h3>
                     <p className="mt-2 text-sm text-brand-gray">{workout.sets} sets • {workout.reps} reps • {workout.rest} rest</p>
                   </div>
-                  <span className="rounded-full border border-brand-red/30 bg-brand-red/10 px-3 py-1 text-sm text-brand-red">{workout.difficulty}</span>
+                  <Link to={`/workout/${encodeURIComponent(workout.title)}`} className="rounded-full border border-brand-red/30 bg-brand-red/10 px-3 py-1 text-sm text-brand-red transition hover:bg-brand-red hover:text-brand-white">Enter</Link>
                 </div>
               </motion.article>
             ))}

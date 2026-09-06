@@ -21,7 +21,7 @@ function fallbackCoachAnswer(message) {
     return 'A small daily calorie deficit will help with fat loss, while a slight surplus plus strength training supports muscle growth. Consistency over time matters most.';
   }
 
-  return 'The AI coach is temporarily unavailable due to Gemini quota limits. Please enable billing and request quota to restore live responses.';
+  return 'The FIT73 AI assistant is temporarily unavailable. Please try again shortly or use the Home, Diet, Workout, Profile, and BMR pages directly.';
 }
 
 export async function askGemini(message) {

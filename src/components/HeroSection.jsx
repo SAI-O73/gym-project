@@ -17,7 +17,7 @@ export default function HeroSection() {
         <motion.div initial={{ x: 24, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ duration: 0.6 }} className="relative">
           <div className="absolute inset-0 rounded-[32px] bg-gradient-to-br from-brand-red/20 via-transparent to-brand-red/20 blur-3xl" />
           <img
-            src="https://i.pinimg.com/736x/19/40/3e/19403e51b1e561e73a8795a9c26ab695.jpg"
+            src="https://i.pinimg.com/736x/19/c7/94/19c794e6ab55ee9cde857a9c48577ec0.jpg"
             alt="Strength training"
             className="relative h-[450px] w-full rounded-[32px] border border-brand-white/10 object-cover shadow-[0_20px_80px_rgba(0,0,0,0.4)]"
           />

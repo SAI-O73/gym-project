@@ -14,6 +14,7 @@ import Contact from './pages/Contact';
 import Dashboard from './pages/Dashboard';
 import Profile from './pages/Profile';
 import AuthConfirmed from './pages/AuthConfirmed';
+import WorkoutPlan from './pages/WorkoutPlan';
 
 const pageVariants = {
   initial: { opacity: 0, y: 12 },
@@ -49,6 +50,7 @@ function AnimatedRoutes() {
           <Route path="/home" element={<AnimatedPage><Home /></AnimatedPage>} />
           <Route path="/diet" element={<AnimatedPage><Diet /></AnimatedPage>} />
           <Route path="/diet-plan/:planName" element={<AnimatedPage><DietPlan /></AnimatedPage>} />
+          <Route path="/workout/:workoutName" element={<AnimatedPage><WorkoutPlan /></AnimatedPage>} />
           <Route path="/bmr" element={<AnimatedPage><BMR /></AnimatedPage>} />
           <Route path="/ai" element={<AnimatedPage><AIChat /></AnimatedPage>} />
           <Route path="/contact" element={<AnimatedPage><Contact /></AnimatedPage>} />

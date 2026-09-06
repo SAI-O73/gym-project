@@ -48,7 +48,7 @@ app.post('/ask', async (req, res) => {
   if (!message) return res.status(400).json({ error: 'Missing message' });
   if (!GEMINI_KEY) return res.status(500).json({ error: 'Server missing Gemini API key' });
 
-  const prompt = `You are an elite AI fitness coach. Respond only to fitness, nutrition, workout, recovery, fat loss, muscle gain, protein, hydration, supplements, and general health-related questions. If the user asks something unrelated, reply exactly: \"I'm your AI Fitness Coach. Please ask only fitness, nutrition, workout or health related questions.\"\n\nUser: ${message}`;
+  const prompt = `You are the helpful AI assistant for the FIT73 website. Answer questions about every part of the website, including Home, BMR, protein calculator, diet plans, workout plans, profile, account settings, email verification, contact, navigation, and AI Coach features. You can also answer fitness, nutrition, workout, recovery, and general health questions. Give clear, practical answers based on the user's question. If you are unsure about a website-specific detail, say so instead of inventing it.\n\nUser: ${message}`;
 
   try {
     // throttle requests to avoid hitting Gemini rate limits
