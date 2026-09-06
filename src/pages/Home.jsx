@@ -7,9 +7,9 @@ import { Link } from 'react-router-dom';
 import { getPersonalizedDietPlans } from '../services/dietPlans';
 
 const dietPlanImages = {
-  'Weight Loss': 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=800&q=80',
-  'Muscle Gain': 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=800&q=80',
-  Maintenance: 'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=800&q=80',
+  'Weight Loss': 'https://i.pinimg.com/736x/08/7b/40/087b4089c161d62e8ca83a1557a44e24.jpg',
+  'Muscle Gain': 'https://i.pinimg.com/736x/85/19/04/851904b39e5a95386384cdd1b69973d4.jpg',
+  Maintenance: 'https://i.pinimg.com/736x/4f/7b/28/4f7b28ad78d97529b58f7c583f6da873.jpg',
 };
 
 const workouts = [
