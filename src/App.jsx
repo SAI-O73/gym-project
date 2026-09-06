@@ -8,7 +8,7 @@ import Login from './pages/Login';
 import Home from './pages/Home';
 import Diet from './pages/Diet';
 import BMR from './pages/BMR';
-import AIChat from './pages/AIChat';
+import AIChat from './pages/GymAssistant';
 import Contact from './pages/Contact';
 import Dashboard from './pages/Dashboard';
 import Profile from './pages/Profile';
