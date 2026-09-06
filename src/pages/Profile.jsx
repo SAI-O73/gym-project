@@ -1,18 +1,22 @@
 import { useEffect, useState } from 'react';
 import SectionHeading from '../components/SectionHeading';
-import { getSession, updateUserMetadata } from '../services/supabase';
+import { deleteUserAccount, getSession, getUserProfile, saveUserProfile, signOut } from '../services/supabase';
 
 export default function Profile() {
   const [profile, setProfile] = useState({ full_name: '', email: '', weight: '', height: '', age: '', gender: 'male', goal: 'Maintenance', image: '' });
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState('');
   const [bmr, setBmr] = useState(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     const loadProfile = async () => {
       try {
         const { data } = await getSession();
-        const remoteProfile = data.session?.user?.user_metadata?.profile;
+        const userId = data.session?.user?.id;
+        const { data: tableProfile } = userId ? await getUserProfile(userId) : { data: null };
+        const remoteProfile = tableProfile || data.session?.user?.user_metadata?.profile;
         const localProfile = JSON.parse(localStorage.getItem('fit73-profile') || 'null');
         const stored = remoteProfile || localProfile;
         if (!stored) return;
@@ -59,6 +63,10 @@ export default function Profile() {
     try {
       localStorage.setItem('fit73-profile', JSON.stringify(profile));
       window.dispatchEvent(new CustomEvent('fit73-profile-updated', { detail: profile }));
+      const { data: sessionData } = await getSession();
+      const userId = sessionData.session?.user?.id;
+      const { error: tableError } = await saveUserProfile(userId, profile);
+      if (tableError) throw tableError;
       const { error: remoteError } = await updateUserMetadata(profile);
       if (remoteError) throw remoteError;
       setSaved(true);
@@ -76,6 +84,28 @@ export default function Profile() {
     const reader = new FileReader();
     reader.onload = () => setProfile((current) => ({ ...current, image: reader.result }));
     reader.readAsDataURL(file);
+  };
+
+  const handleDeleteAccount = async () => {
+    setDeleting(true);
+    setError('');
+    try {
+      const { data } = await getSession();
+      if (!data.session?.user?.id) throw new Error('You must be signed in to delete your account.');
+      const { error: deleteError } = await deleteUserAccount();
+      if (deleteError) throw deleteError;
+
+      localStorage.removeItem('fit73-profile');
+      localStorage.removeItem('fit73-home-stats');
+      localStorage.removeItem('fit73-saved-credentials');
+      window.dispatchEvent(new CustomEvent('fit73-profile-updated', { detail: null }));
+      await signOut();
+      window.location.href = '/';
+    } catch (deleteError) {
+      setDeleting(false);
+      setShowDeleteConfirm(false);
+      setError(deleteError?.message || 'Unable to delete your account. Run the latest profiles.sql in Supabase SQL Editor and try again.');
+    }
   };
 
   return (
@@ -129,6 +159,9 @@ export default function Profile() {
           </div>
           {error ? <p className="mt-4 text-sm text-red-300">{error}</p> : null}
           {saved ? <p className="mt-4 text-sm text-brand-red">Profile updated locally for this session.</p> : null}
+          <div className="mt-8 border-t border-brand-white/10 pt-6">
+            <button type="button" onClick={() => setShowDeleteConfirm(true)} className="rounded-full border border-red-400/40 px-5 py-2.5 text-sm font-semibold text-red-300 transition hover:bg-red-500/10">Delete Account</button>
+          </div>
         </form>
         {bmr ? (
           <div className="mt-8 rounded-[32px] border border-brand-white/10 bg-brand-black/30 p-8 backdrop-blur-xl">
@@ -138,6 +171,18 @@ export default function Profile() {
           </div>
         ) : null}
       </div>
+      {showDeleteConfirm ? (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 px-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="delete-account-title">
+          <div className="w-full max-w-md rounded-3xl border border-brand-white/10 bg-brand-black p-6 shadow-2xl">
+            <h2 id="delete-account-title" className="text-xl font-semibold">Do you want to delete your account?</h2>
+            <p className="mt-3 text-sm text-brand-gray">Your profile, saved fitness values, and local account data will be deleted and you will be signed out.</p>
+            <div className="mt-6 flex justify-end gap-3">
+              <button type="button" disabled={deleting} onClick={() => setShowDeleteConfirm(false)} className="rounded-full border border-brand-white/20 px-5 py-2.5 text-sm font-semibold text-brand-gray transition hover:bg-brand-white/10">Cancel</button>
+              <button type="button" disabled={deleting} onClick={handleDeleteAccount} className="rounded-full bg-red-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-red-700">{deleting ? 'Deleting...' : 'OK'}</button>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }

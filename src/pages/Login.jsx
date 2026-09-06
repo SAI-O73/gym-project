@@ -63,7 +63,8 @@ export default function Login() {
 
     try {
       if (mode === 'register') {
-        const { data, error } = await signUpWithEmail({ email: form.email, password: form.password });
+        const redirectTo = import.meta.env.VITE_AUTH_REDIRECT || `${window.location.origin}/auth/confirmed`;
+        const { data, error } = await signUpWithEmail({ email: form.email, password: form.password, redirectTo });
         if (error) throw error;
         if (rememberMe) {
           saveCredentials(form.email, form.password);

@@ -132,8 +132,12 @@ export function subscribeToAuth(callback) {
   return getAuth().onAuthStateChange(callback);
 }
 
-export async function signUpWithEmail({ email, password }) {
-  return getAuth().signUp({ email, password });
+export async function signUpWithEmail({ email, password, redirectTo }) {
+  return getAuth().signUp({
+    email,
+    password,
+    options: redirectTo ? { emailRedirectTo: redirectTo } : undefined,
+  });
 }
 
 export async function signInWithEmail({ email, password }) {
@@ -142,6 +146,41 @@ export async function signInWithEmail({ email, password }) {
 
 export async function updateUserMetadata(profile) {
   return getAuth().updateUser({ data: { profile } });
+}
+
+export async function getUserProfile(userId) {
+  const client = ensureSupabaseClient();
+  if (!client || !userId) return { data: null, error: { message: 'Supabase client or user is not available.' } };
+  return client.from('profiles').select('*').eq('id', userId).maybeSingle();
+}
+
+export async function saveUserProfile(userId, profile) {
+  const client = ensureSupabaseClient();
+  if (!client || !userId) return { data: null, error: { message: 'Supabase client or user is not available.' } };
+  return client.from('profiles').upsert({
+    id: userId,
+    full_name: profile.full_name,
+    email: profile.email,
+    weight: Number(profile.weight),
+    height: Number(profile.height),
+    age: Number(profile.age),
+    gender: profile.gender,
+    goal: profile.goal,
+    image: profile.image,
+    updated_at: new Date().toISOString(),
+  }, { onConflict: 'id' }).select().single();
+}
+
+export async function deleteUserProfile(userId) {
+  const client = ensureSupabaseClient();
+  if (!client || !userId) return { error: { message: 'Supabase client or user is not available.' } };
+  return client.from('profiles').delete().eq('id', userId);
+}
+
+export async function deleteUserAccount() {
+  const client = ensureSupabaseClient();
+  if (!client) return { data: null, error: { message: 'Supabase client is not available.' } };
+  return client.rpc('delete_user_account');
 }
 
 export function getSupabaseClient() {

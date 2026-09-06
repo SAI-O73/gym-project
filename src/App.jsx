@@ -13,6 +13,7 @@ import AIChat from './pages/GymAssistant';
 import Contact from './pages/Contact';
 import Dashboard from './pages/Dashboard';
 import Profile from './pages/Profile';
+import AuthConfirmed from './pages/AuthConfirmed';
 
 const pageVariants = {
   initial: { opacity: 0, y: 12 },
@@ -43,6 +44,7 @@ function AnimatedRoutes() {
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
         <Route path="/" element={<AnimatedPage><Login /></AnimatedPage>} />
+        <Route path="/auth/confirmed" element={<AnimatedPage><AuthConfirmed /></AnimatedPage>} />
         <Route element={<ProtectedRoute />}>
           <Route path="/home" element={<AnimatedPage><Home /></AnimatedPage>} />
           <Route path="/diet" element={<AnimatedPage><Diet /></AnimatedPage>} />

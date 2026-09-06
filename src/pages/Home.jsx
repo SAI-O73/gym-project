@@ -154,6 +154,59 @@ function BmrWidget() {
   );
 }
 
+function ProteinWidget() {
+  const [weight, setWeight] = useState('');
+  const [goal, setGoal] = useState('Maintenance');
+  const [protein, setProtein] = useState(null);
+
+  useEffect(() => {
+    try {
+      const profile = JSON.parse(localStorage.getItem('fit73-profile') || 'null');
+      const stats = JSON.parse(localStorage.getItem('fit73-home-stats') || 'null');
+      const savedWeight = profile?.weight || stats?.weight;
+      if (savedWeight) setWeight(savedWeight);
+      if (profile?.goal) setGoal(profile.goal);
+    } catch {
+      // Ignore unavailable saved profile data.
+    }
+  }, []);
+
+  const calculateProtein = (e) => {
+    e.preventDefault();
+    const weightValue = Number(weight);
+    if (!weightValue || weightValue <= 0) return;
+
+    const multiplier = goal === 'Muscle Gain' ? 2 : 1.6;
+    setProtein(Math.round(weightValue * multiplier));
+  };
+
+  return (
+    <div className="rounded-[20px] border border-brand-white/10 bg-brand-black/30 p-4">
+      <p className="text-sm uppercase tracking-[0.35em] text-brand-red">Protein Calculator</p>
+      <p className="mt-2 text-sm text-brand-gray">Estimate your daily protein target from your weight and goal.</p>
+      <form onSubmit={calculateProtein} className="mt-5 space-y-3">
+        <label className="block text-sm text-brand-gray">Weight (kg)
+          <input type="number" min="1" value={weight} onChange={(e) => setWeight(e.target.value)} placeholder="e.g. 75" required className="mt-1 w-full rounded-2xl border border-brand-white/10 bg-brand-black/30 px-3 py-2 text-brand-white outline-none focus:border-brand-red/60" />
+        </label>
+        <label className="block text-sm text-brand-gray">Goal
+          <select value={goal} onChange={(e) => setGoal(e.target.value)} style={{ colorScheme: 'dark' }} className="mt-1 w-full rounded-2xl border border-brand-white/10 bg-brand-black/30 px-3 py-2 text-brand-white outline-none focus:border-brand-red/60">
+            <option className="bg-black text-white">Weight Loss</option>
+            <option className="bg-black text-white">Muscle Gain</option>
+            <option className="bg-black text-white">Maintenance</option>
+          </select>
+        </label>
+        <button type="submit" className="w-full rounded-full bg-brand-red px-4 py-2 text-sm font-semibold transition hover:bg-red-700">Calculate Protein</button>
+      </form>
+      {protein ? (
+        <div className="mt-4 rounded-2xl border border-brand-red/30 bg-brand-red/10 p-3">
+          <p className="text-xs uppercase tracking-[0.25em] text-brand-red">Daily target</p>
+          <p className="mt-1 text-2xl font-semibold text-brand-white">{protein}g protein</p>
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
 export default function Home() {
   const [homeStats, setHomeStats] = useState(null);
 
@@ -182,7 +235,10 @@ export default function Home() {
       <section className="px-4 py-16 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <SectionHeading eyebrow="Home Stats" title="Calculate your daily energy need" description="Enter your weight, height, age, and gender to estimate your BMR instantly." />
-          <BmrWidget />
+          <div className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
+            <BmrWidget />
+            <ProteinWidget />
+          </div>
         </div>
       </section>
 
