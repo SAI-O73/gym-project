@@ -181,7 +181,7 @@ export default function Home() {
                   </div>
                   <div className="mt-4 flex items-center justify-between text-sm text-brand-gray">
                     <span>{plan.meals} meals/day</span>
-                    <span className="rounded-full border border-brand-red/30 bg-brand-red/10 px-3 py-1 text-brand-red">Premium</span>
+                    <span className="rounded-full border border-brand-red/30 bg-brand-red/10 px-3 py-1 text-brand-red">Enter</span>
                   </div>
                 </div>
               </motion.article>
