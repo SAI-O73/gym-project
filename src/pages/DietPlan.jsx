@@ -2,32 +2,12 @@ import { motion } from 'framer-motion';
 import { FaAppleAlt, FaArrowLeft } from 'react-icons/fa';
 import { Link, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import { getPersonalizedDietPlan } from '../services/dietPlans';
 
-const plans = {
-  'Weight Loss': {
-    calories: '1800',
-    protein: '120g',
-    carbs: '180g',
-    fat: '55g',
-    meals: '4',
-    focus: 'A balanced calorie deficit designed for steady, sustainable fat loss.',
-  },
-  'Muscle Gain': {
-    calories: '2600',
-    protein: '180g',
-    carbs: '320g',
-    fat: '70g',
-    meals: '5',
-    focus: 'A high-protein structure to support training performance and muscle growth.',
-  },
-  Maintenance: {
-    calories: '2200',
-    protein: '145g',
-    carbs: '250g',
-    fat: '60g',
-    meals: '4',
-    focus: 'A flexible macro balance for maintaining energy, strength, and body composition.',
-  },
+const planFocus = {
+  'Weight Loss': 'A balanced calorie deficit designed for steady, sustainable fat loss.',
+  'Muscle Gain': 'A high-protein structure to support training performance and muscle growth.',
+  Maintenance: 'A flexible macro balance for maintaining energy, strength, and body composition.',
 };
 
 const weightLossMeals = [
@@ -98,23 +78,14 @@ export default function DietPlan() {
     }
   }, []);
 
-  const basePlan = plans[planTitle] || plans['Weight Loss'];
-  const plan = homeStats?.bmr && homeStats?.weight ? {
-    ...basePlan,
-    calories: String(Math.max(1200, Math.round((homeStats.bmr * 1.4 + {
-      'Weight Loss': -400,
-      'Muscle Gain': 300,
-      Maintenance: 0,
-    }[planTitle]) / 50) * 50)),
-    protein: `${Math.round(homeStats.weight * {
-      'Weight Loss': 1.6,
-      'Muscle Gain': 2,
-      Maintenance: 1.6,
-    }[planTitle])}g`,
-  } : basePlan;
-  const isWeightLoss = planTitle === 'Weight Loss';
-  const isMuscleGain = planTitle === 'Muscle Gain';
-  const isMaintenance = planTitle === 'Maintenance';
+  const selectedPlanTitle = planFocus[planTitle] ? planTitle : 'Weight Loss';
+  const plan = {
+    ...getPersonalizedDietPlan(selectedPlanTitle, homeStats),
+    focus: planFocus[selectedPlanTitle],
+  };
+  const isWeightLoss = selectedPlanTitle === 'Weight Loss';
+  const isMuscleGain = selectedPlanTitle === 'Muscle Gain';
+  const isMaintenance = selectedPlanTitle === 'Maintenance';
   const mealRows = isWeightLoss ? weightLossMeals : isMuscleGain ? muscleGainMeals : maintenanceMeals;
 
   return (
@@ -135,7 +106,7 @@ export default function DietPlan() {
             <div className="flex items-start justify-between gap-4">
               <div>
                 <p className="text-sm font-semibold uppercase tracking-[0.35em] text-brand-red">Signature Plan</p>
-                <h1 className="mt-3 text-4xl font-semibold sm:text-5xl">{planTitle}</h1>
+                <h1 className="mt-3 text-4xl font-semibold sm:text-5xl">{selectedPlanTitle}</h1>
               </div>
               <FaAppleAlt className="mt-2 text-3xl text-brand-red" />
             </div>
@@ -178,7 +149,7 @@ export default function DietPlan() {
                 </div>
                 <div className="overflow-x-auto">
                   <table className={`w-full text-left text-sm ${isWeightLoss ? 'min-w-[620px]' : 'min-w-[560px]'}`}>
-                    <caption className="sr-only">{planTitle} daily meal plan with quantities</caption>
+                    <caption className="sr-only">{selectedPlanTitle} daily meal plan with quantities</caption>
                     <thead className="bg-brand-black/50 text-xs uppercase tracking-[0.14em] text-brand-gray">
                       <tr>
                         <th className="px-4 py-3.5 font-medium">Time</th>

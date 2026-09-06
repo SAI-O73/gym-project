@@ -1,11 +1,6 @@
 import SectionHeading from '../components/SectionHeading';
 import { useEffect, useState } from 'react';
-
-const plans = [
-  { title: 'Weight Loss', calories: '1800', protein: '120g', carbs: '180g', fat: '55g', meals: '4', icon: '🔥' },
-  { title: 'Muscle Gain', calories: '2600', protein: '180g', carbs: '320g', fat: '70g', meals: '5', icon: '💪' },
-  { title: 'Maintenance', calories: '2200', protein: '145g', carbs: '250g', fat: '60g', meals: '4', icon: '⚖️' },
-];
+import { getPersonalizedDietPlans } from '../services/dietPlans';
 
 export default function Diet() {
   const [homeStats, setHomeStats] = useState(null);
@@ -19,30 +14,25 @@ export default function Diet() {
     }
   }, []);
 
-  const adjustedPlans = plans.map((plan) => {
-    if (!homeStats?.bmr) return plan;
-
-    const activityCalories = Math.round((homeStats.bmr * 1.4) / 50) * 50;
-    const calorieAdjustments = {
-      'Weight Loss': -400,
-      'Muscle Gain': 300,
-      Maintenance: 0,
-    };
-    const proteinMultipliers = {
-      'Weight Loss': 1.6,
-      'Muscle Gain': 2,
-      Maintenance: 1.6,
-    };
-    const calories = Math.max(1200, activityCalories + calorieAdjustments[plan.title]);
-    const protein = Math.round(homeStats.weight * proteinMultipliers[plan.title]);
-
-    return { ...plan, calories: String(calories), protein: `${protein}g` };
-  });
+  const adjustedPlans = getPersonalizedDietPlans(homeStats);
 
   return (
     <div className="min-h-screen bg-brand-black px-4 py-16 text-brand-white sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <SectionHeading eyebrow="Diet Plans" title="Nutrition strategies that feel effortless" description={homeStats ? 'Targets updated from your Home stats and estimated BMR.' : 'Calculate your BMR on Home to personalize these nutrition targets.'} />
+        <div className="mb-8 rounded-[20px] border border-brand-white/10 bg-brand-black/30 p-4">
+          <p className="text-sm uppercase tracking-[0.35em] text-brand-red">Your Profile</p>
+          {homeStats ? (
+            <div className="mt-4 grid gap-3 text-sm text-brand-gray sm:grid-cols-2 lg:grid-cols-4">
+              <div className="rounded-2xl bg-brand-white/10 p-3"><p className="text-xs uppercase tracking-[0.25em]">Body Weight</p><p className="mt-1 text-lg font-semibold text-brand-white">{homeStats.weight} kg</p></div>
+              <div className="rounded-2xl bg-brand-white/10 p-3"><p className="text-xs uppercase tracking-[0.25em]">Height</p><p className="mt-1 text-lg font-semibold text-brand-white">{homeStats.height} cm</p></div>
+              <div className="rounded-2xl bg-brand-white/10 p-3"><p className="text-xs uppercase tracking-[0.25em]">Age / Gender</p><p className="mt-1 text-lg font-semibold text-brand-white">{homeStats.age} / {homeStats.gender}</p></div>
+              <div className="rounded-2xl border border-brand-red/30 bg-brand-red/10 p-3"><p className="text-xs uppercase tracking-[0.25em] text-brand-red">Current BMR</p><p className="mt-1 text-lg font-semibold text-brand-white">{homeStats.bmr} kcal/day</p></div>
+            </div>
+          ) : (
+            <p className="mt-3 text-sm text-brand-gray">Enter your values in Home and calculate your BMR to show your profile here.</p>
+          )}
+        </div>
         <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
           {adjustedPlans.map((plan) => (
             <div key={plan.title} className="rounded-[28px] border border-brand-white/10 bg-brand-white/8 p-6 backdrop-blur-xl">

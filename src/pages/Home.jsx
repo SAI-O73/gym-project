@@ -4,12 +4,13 @@ import { motion } from 'framer-motion';
 import { FaDumbbell, FaAppleAlt, FaHeartbeat, FaRunning } from 'react-icons/fa';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { getPersonalizedDietPlans } from '../services/dietPlans';
 
-const dietPlans = [
-  { title: 'Weight Loss', calories: '1800', protein: '120g', carbs: '180g', fat: '55g', meals: '4', image: 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=800&q=80' },
-  { title: 'Muscle Gain', calories: '2600', protein: '180g', carbs: '320g', fat: '70g', meals: '5', image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=800&q=80' },
-  { title: 'Maintenance', calories: '2200', protein: '145g', carbs: '250g', fat: '60g', meals: '4', image: 'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=800&q=80' },
-];
+const dietPlanImages = {
+  'Weight Loss': 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=800&q=80',
+  'Muscle Gain': 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=800&q=80',
+  Maintenance: 'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=800&q=80',
+};
 
 const workouts = [
   { title: 'Chest', sets: '4', reps: '10-12', rest: '60s', difficulty: 'Intermediate', image: 'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?auto=format&fit=crop&w=800&q=80' },
@@ -47,7 +48,9 @@ function BmrWidget() {
     const result = 10 * w + 6.25 * h - 5 * a + (gender === 'male' ? 5 : -161);
     const rounded = Math.round(result);
     setBmr(rounded);
-    localStorage.setItem('fit73-home-stats', JSON.stringify({ weight: w, height: h, age: a, gender, bmr: rounded }));
+    const stats = { weight: w, height: h, age: a, gender, bmr: rounded };
+    localStorage.setItem('fit73-home-stats', JSON.stringify(stats));
+    window.dispatchEvent(new CustomEvent('fit73-home-stats-updated', { detail: stats }));
   };
 
   const profileBmr = (() => {
@@ -152,6 +155,26 @@ function BmrWidget() {
 }
 
 export default function Home() {
+  const [homeStats, setHomeStats] = useState(null);
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem('fit73-home-stats');
+      if (raw) setHomeStats(JSON.parse(raw));
+    } catch {
+      setHomeStats(null);
+    }
+
+    const handleStatsUpdate = (event) => setHomeStats(event.detail);
+    window.addEventListener('fit73-home-stats-updated', handleStatsUpdate);
+    return () => window.removeEventListener('fit73-home-stats-updated', handleStatsUpdate);
+  }, []);
+
+  const dietPlans = getPersonalizedDietPlans(homeStats).map((plan) => ({
+    ...plan,
+    image: dietPlanImages[plan.title],
+  }));
+
   return (
     <div className="min-h-screen bg-brand-black text-brand-white">
       <HeroSection />
