@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import SectionHeading from '../components/SectionHeading';
-import { deleteUserAccount, getSession, getUserProfile, saveUserProfile, signOut } from '../services/supabase';
+import { deleteUserAccount, getSession, getUserProfile, saveUserProfile, signOut, updateUserMetadata } from '../services/supabase';
 
 export default function Profile() {
   const [profile, setProfile] = useState({ full_name: '', email: '', weight: '', height: '', age: '', gender: 'male', goal: 'Maintenance', image: '' });
@@ -67,13 +67,15 @@ export default function Profile() {
       const userId = sessionData.session?.user?.id;
       const { error: tableError } = await saveUserProfile(userId, profile);
       if (tableError) throw tableError;
-      const { error: remoteError } = await updateUserMetadata(profile);
-      if (remoteError) throw remoteError;
+      try {
+        await updateUserMetadata(profile);
+      } catch {}
       setSaved(true);
       setError('');
-    } catch {
+    } catch (saveError) {
       setSaved(false);
-      setError('Unable to save your profile to your account right now.');
+      console.error('Profile save failed:', saveError);
+      setError(saveError?.message || 'Unable to save your profile to your account right now.');
     }
   };
 
@@ -158,7 +160,7 @@ export default function Profile() {
             <span className="text-xs text-brand-gray">Your profile powers your personalized diet targets.</span>
           </div>
           {error ? <p className="mt-4 text-sm text-red-300">{error}</p> : null}
-          {saved ? <p className="mt-4 text-sm text-brand-red">Profile updated locally for this session.</p> : null}
+          {saved ? <p className="mt-4 text-sm text-brand-red">Your profile is saved.</p> : null}
           <div className="mt-8 border-t border-brand-white/10 pt-6">
             <button type="button" onClick={() => setShowDeleteConfirm(true)} className="rounded-full border border-red-400/40 px-5 py-2.5 text-sm font-semibold text-red-300 transition hover:bg-red-500/10">Delete Account</button>
           </div>

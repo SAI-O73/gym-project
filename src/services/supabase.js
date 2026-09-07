@@ -161,7 +161,8 @@ export async function updatePassword(password) {
 }
 
 export async function updateUserMetadata(profile) {
-  return getAuth().updateUser({ data: { profile } });
+  const { image, ...profileMetadata } = profile;
+  return getAuth().updateUser({ data: { profile: profileMetadata } });
 }
 
 export async function getUserProfile(userId) {
@@ -196,6 +197,8 @@ export async function deleteUserProfile(userId) {
 export async function deleteUserAccount() {
   const client = ensureSupabaseClient();
   if (!client) return { data: null, error: { message: 'Supabase client is not available.' } };
+  const edgeFunctionResult = await client.functions.invoke('delete-account');
+  if (!edgeFunctionResult.error) return edgeFunctionResult;
   return client.rpc('delete_user_account');
 }
 
