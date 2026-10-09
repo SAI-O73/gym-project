@@ -10,7 +10,7 @@ export default function HeroSection() {
             AI-powered fitness intelligence
           </p>
           <h1 className="text-4xl font-semibold leading-tight text-brand-white sm:text-5xl lg:text-7xl">
-            Transform your body with FIT73 <span className="bg-gradient-to-r from-brand-red to-brand-red bg-clip-text text-transparent">AI precision</span>
+            Transform Your Physique with RUDRAFIT<span className="bg-gradient-to-r from-brand-red to-brand-red bg-clip-text text-transparent">RUDRAFIT</span>
           </h1>
         </motion.div>
 

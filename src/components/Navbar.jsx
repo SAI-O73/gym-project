@@ -64,8 +64,8 @@ export default function Navbar() {
             <span className="text-xl font-semibold">AG</span>
           </div>
           <div>
-            <p className="text-sm font-semibold tracking-[0.35em] text-brand-red">FIT73</p>
-            <p className="text-xs text-brand-gray">Performance Lab</p>
+            <p className="text-sm font-semibold tracking-[0.35em] text-brand-red">RUDRAFIT</p>
+            <p className="text-xs text-brand-gray">Power Within You.</p>
           </div>
         </Link>
 
