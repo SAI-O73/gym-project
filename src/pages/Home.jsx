@@ -319,11 +319,30 @@ export default function Home() {
     image: dietPlanImages[plan.title],
   }));
 
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
     <div className="min-h-screen bg-brand-black text-brand-white">
+      <button
+        type="button"
+        onClick={scrollToTop}
+        aria-label="Scroll to top"
+        className="fixed bottom-8 right-[10px] z-50 flex h-10 w-10 items-center justify-center rounded-full border border-brand-red/30 bg-brand-black/80 text-lg text-brand-red shadow-[0_8px_22px_rgba(0,0,0,0.35)] backdrop-blur-md transition hover:-translate-y-0.5 hover:border-brand-red hover:bg-brand-red hover:text-brand-white"
+      >
+        ↑
+      </button>
+
       <HeroSection />
 
-      <section className="px-4 py-16 sm:px-6 lg:px-8">
+      <motion.section
+        initial={{ opacity: 0, y: 28 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: false, amount: 0.2 }}
+        transition={{ duration: 0.6, ease: 'easeOut' }}
+        className="px-4 py-16 sm:px-6 lg:px-8"
+      >
         <div className="mx-auto max-w-7xl">
           <SectionHeading eyebrow="Home Stats" title="Calculate your daily energy need" description="Enter your weight, height, age, and gender to estimate your BMR instantly." />
           <div className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
@@ -331,14 +350,27 @@ export default function Home() {
             <ProteinWidget />
           </div>
         </div>
-      </section>
+      </motion.section>
 
-      <section className="px-4 py-16 sm:px-6 lg:px-8">
+      <motion.section
+        initial={{ opacity: 0, y: 28 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: false, amount: 0.2 }}
+        transition={{ duration: 0.7, ease: 'easeOut', delay: 0.05 }}
+        className="px-4 py-16 sm:px-6 lg:px-8"
+      >
         <div className="mx-auto max-w-7xl">
           <SectionHeading eyebrow="Signature Plans" title="Elite nutrition programs" description="Curated for fat loss, muscle gain, and maintenance with fit73 premium structure." />
           <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-            {dietPlans.map((plan, index) => (
-              <motion.article initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: index * 0.08 }} key={plan.title} className="overflow-hidden rounded-[28px] border border-brand-white/10 bg-brand-white/8 backdrop-blur-xl">
+            {dietPlans.map((plan) => (
+              <motion.article
+                key={plan.title}
+                initial={{ opacity: 0, y: 18 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: false, amount: 0.25 }}
+                transition={{ duration: 0.5, ease: 'easeOut' }}
+                className="overflow-hidden rounded-[28px] border border-brand-white/10 bg-brand-white/8 backdrop-blur-xl"
+              >
                 <img src={plan.image} alt={plan.title} className="h-48 w-full rounded-xl border border-brand-white/10 object-cover" />
                 <div className="p-6">
                   <div className="mb-4 flex items-center justify-between">
@@ -360,14 +392,27 @@ export default function Home() {
             ))}
           </div>
         </div>
-      </section>
+      </motion.section>
 
-      <section className="px-4 py-16 sm:px-6 lg:px-8">
+      <motion.section
+        initial={{ opacity: 0, y: 28 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: false, amount: 0.2 }}
+        transition={{ duration: 0.7, ease: 'easeOut', delay: 0.06 }}
+        className="px-4 py-16 sm:px-6 lg:px-8"
+      >
         <div className="mx-auto max-w-7xl">
           <SectionHeading eyebrow="Training Library" title="Home workouts that fit your schedule" description="High-impact sessions with smart progression and recovery guidance." />
           <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-            {workouts.map((workout, index) => (
-              <motion.article initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: index * 0.08 }} key={workout.title} className="overflow-hidden rounded-[28px] border border-brand-white/10 bg-brand-white/8 p-4 backdrop-blur-xl">
+            {workouts.map((workout) => (
+              <motion.article
+                key={workout.title}
+                initial={{ opacity: 0, y: 18 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: false, amount: 0.25 }}
+                transition={{ duration: 0.5, ease: 'easeOut' }}
+                className="overflow-hidden rounded-[28px] border border-brand-white/10 bg-brand-white/8 p-4 backdrop-blur-xl"
+              >
                 <img src={workout.image} alt={workout.title} className="h-56 w-full rounded-xl border border-brand-white/10 bg-brand-black object-contain" />
                 <div className="mt-4 flex items-start justify-between">
                   <div>
@@ -380,7 +425,7 @@ export default function Home() {
             ))}
           </div>
         </div>
-      </section>
+      </motion.section>
 
       
     </div>
