@@ -17,7 +17,7 @@ export default function Profile() {
         const userId = data.session?.user?.id;
         const { data: tableProfile } = userId ? await getUserProfile(userId) : { data: null };
         const remoteProfile = tableProfile || data.session?.user?.user_metadata?.profile;
-        const localProfile = JSON.parse(localStorage.getItem('fit73-profile') || 'null');
+        const localProfile = JSON.parse(localStorage.getItem('rudrafit-profile') || 'null');
         const stored = remoteProfile || localProfile;
         if (!stored) return;
         setProfile((current) => ({
@@ -61,8 +61,8 @@ export default function Profile() {
     }
 
     try {
-      localStorage.setItem('fit73-profile', JSON.stringify(profile));
-      window.dispatchEvent(new CustomEvent('fit73-profile-updated', { detail: profile }));
+      localStorage.setItem('rudrafit-profile', JSON.stringify(profile));
+      window.dispatchEvent(new CustomEvent('rudrafit-profile-updated', { detail: profile }));
       const { data: sessionData } = await getSession();
       const userId = sessionData.session?.user?.id;
       const { error: tableError } = await saveUserProfile(userId, profile);
@@ -97,10 +97,10 @@ export default function Profile() {
       const { error: deleteError } = await deleteUserAccount();
       if (deleteError) throw deleteError;
 
-      localStorage.removeItem('fit73-profile');
-      localStorage.removeItem('fit73-home-stats');
-      localStorage.removeItem('fit73-saved-credentials');
-      window.dispatchEvent(new CustomEvent('fit73-profile-updated', { detail: null }));
+      localStorage.removeItem('rudrafit-profile');
+      localStorage.removeItem('rudrafit-home-stats');
+      localStorage.removeItem('rudrafit-saved-credentials');
+      window.dispatchEvent(new CustomEvent('rudrafit-profile-updated', { detail: null }));
       await signOut();
       window.location.href = '/';
     } catch (deleteError) {

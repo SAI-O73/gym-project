@@ -7,7 +7,7 @@ function ProfileCard() {
 
   useEffect(() => {
     try {
-      const raw = localStorage.getItem('fit73-profile');
+      const raw = localStorage.getItem('rudrafit-profile');
       if (!raw) return;
       const p = JSON.parse(raw);
       setProfile({
@@ -30,7 +30,7 @@ function ProfileCard() {
   }, [profile]);
 
   const handleSave = () => {
-    localStorage.setItem('fit73-profile', JSON.stringify(profile));
+    localStorage.setItem('rudrafit-profile', JSON.stringify(profile));
     setSaved(true);
     window.setTimeout(() => setSaved(false), 3000);
   };

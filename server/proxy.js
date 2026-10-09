@@ -11,7 +11,7 @@ const PORT = process.env.PORT || 3001;
 const GEMINI_KEY = process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY || '';
 const RESEND_API_KEY = process.env.RESEND_API_KEY || '';
 const CONTACT_TO_EMAIL = 'dsaimtm@gmail.com';
-const CONTACT_FROM_EMAIL = process.env.CONTACT_FROM_EMAIL || 'FIT73 Contact <onboarding@resend.dev>';
+const CONTACT_FROM_EMAIL = process.env.CONTACT_FROM_EMAIL || 'RUDRAFIT Contact <onboarding@resend.dev>';
 
 if (!GEMINI_KEY) {
   console.warn('Warning: GEMINI_API_KEY is not set. Proxy will return an error for requests.');
@@ -22,7 +22,7 @@ app.post('/ask', async (req, res) => {
   if (!message) return res.status(400).json({ error: 'Missing message' });
   if (!GEMINI_KEY) return res.status(500).json({ error: 'Server missing Gemini API key' });
 
-  const prompt = `You are an elite AI fitness coach. Respond only to fitness, nutrition, workout, recovery, fat loss, muscle gain, protein, hydration, supplements, and general health-related questions. If the user asks something unrelated, reply exactly: \"I'm your AI Fitness Coach. Please ask only fitness, nutrition, workout or health related questions.\"\n\nUser: ${message}`;
+  const prompt = `You are the helpful AI assistant for the RUDRAFIT website and fitness brand. Your job is to guide users through the current RUDRAFIT experience, including the Home page, hero branding, BMR calculator, protein calculator, diet plans, workout plans, profile settings, AI Coach, account flows, contact page, and nutrition/training guidance. Use the brand language of RUDRAFIT, premium black-and-red fitness aesthetic, high-performance coaching, clean design, and practical training advice. If the user asks about the website, explain which page they should use and how the feature works. If they ask about fitness, give workouts, nutrient advice, calorie/protein guidance, or recovery recommendations in a clear, actionable way. Always answer from the real app context and keep suggestions realistic. If you are unsure about a website-specific detail, say so instead of inventing it.\n\nUser: ${message}`;
 
   try {
     const response = await axios.post(
@@ -56,7 +56,7 @@ app.post('/contact', async (req, res) => {
         from: CONTACT_FROM_EMAIL,
         to: [CONTACT_TO_EMAIL],
         reply_to: email,
-        subject: `FIT73 contact message from ${name}`,
+        subject: `RUDRAFIT contact message from ${name}`,
         text: `Name: ${name}\nEmail: ${email}\n\n${message}`,
       }),
     });

@@ -11,7 +11,7 @@ const PORT = process.env.PORT || 3001;
 const GEMINI_KEY = process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY || '';
 const RESEND_API_KEY = process.env.RESEND_API_KEY || '';
 const CONTACT_TO_EMAIL = 'dsaimtm@gmail.com';
-const CONTACT_FROM_EMAIL = process.env.CONTACT_FROM_EMAIL || 'FIT73 Contact <onboarding@resend.dev>';
+const CONTACT_FROM_EMAIL = process.env.CONTACT_FROM_EMAIL || 'RUDRAFIT Contact <onboarding@resend.dev>';
 
 // Simple token-bucket rate limiting to avoid sending too many requests to Gemini
 const RATE_LIMIT_PER_SEC = Number(process.env.GEMINI_RATE_LIMIT_PER_SEC || 3);
@@ -48,7 +48,7 @@ app.post('/ask', async (req, res) => {
   if (!message) return res.status(400).json({ error: 'Missing message' });
   if (!GEMINI_KEY) return res.status(500).json({ error: 'Server missing Gemini API key' });
 
-  const prompt = `You are the helpful AI assistant for the FIT73 website. Answer questions about every part of the website, including Home, BMR, protein calculator, diet plans, workout plans, profile, account settings, email verification, contact, navigation, and AI Coach features. You can also answer fitness, nutrition, workout, recovery, and general health questions. Give clear, practical answers based on the user's question. If you are unsure about a website-specific detail, say so instead of inventing it.\n\nUser: ${message}`;
+  const prompt = `You are the helpful AI assistant for the RUDRAFIT website and fitness brand. Your job is to guide users through the current RUDRAFIT experience, including the Home page, hero branding, BMR calculator, protein calculator, diet plans, workout plans, profile settings, AI Coach, account flows, contact page, and nutrition/training guidance. Use the brand language of RUDRAFIT, premium black-and-red fitness aesthetic, high-performance coaching, clean design, and practical training advice. If the user asks about the website, explain which page they should use and how the feature works. If they ask about fitness, give workouts, nutrient advice, calorie/protein guidance, or recovery recommendations in a clear, actionable way. Always answer from the real app context and keep suggestions realistic. If you are unsure about a website-specific detail, say so instead of inventing it.\n\nUser: ${message}`;
 
   try {
     // throttle requests to avoid hitting Gemini rate limits
@@ -107,7 +107,7 @@ app.post('/contact', async (req, res) => {
         from: CONTACT_FROM_EMAIL,
         to: [CONTACT_TO_EMAIL],
         reply_to: email,
-        subject: `FIT73 contact message from ${name}`,
+        subject: `RUDRAFIT contact message from ${name}`,
         text: `Name: ${name}\nEmail: ${email}\n\n${message}`,
       }),
     });

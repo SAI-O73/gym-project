@@ -8,8 +8,8 @@ export default function Diet() {
   useEffect(() => {
     const loadStats = (profileOverride) => {
       try {
-        const profile = profileOverride || JSON.parse(localStorage.getItem('fit73-profile') || 'null');
-        const homeStats = JSON.parse(localStorage.getItem('fit73-home-stats') || 'null');
+        const profile = profileOverride || JSON.parse(localStorage.getItem('rudrafit-profile') || 'null');
+        const homeStats = JSON.parse(localStorage.getItem('rudrafit-home-stats') || 'null');
         setDietStats(getDietStats(profile, homeStats));
       } catch {
         setDietStats(null);
@@ -18,9 +18,9 @@ export default function Diet() {
 
     loadStats();
     const handleProfileUpdate = (event) => loadStats(event.detail);
-    window.addEventListener('fit73-profile-updated', handleProfileUpdate);
-    window.addEventListener('fit73-home-stats-updated', () => loadStats());
-    return () => window.removeEventListener('fit73-profile-updated', handleProfileUpdate);
+    window.addEventListener('rudrafit-profile-updated', handleProfileUpdate);
+    window.addEventListener('rudrafit-home-stats-updated', () => loadStats());
+    return () => window.removeEventListener('rudrafit-profile-updated', handleProfileUpdate);
   }, []);
 
   const adjustedPlans = getPersonalizedDietPlans(dietStats);

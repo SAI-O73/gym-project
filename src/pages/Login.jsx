@@ -1,11 +1,28 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { FiMail, FiLock, FiUser, FiCheckCircle, FiSave } from 'react-icons/fi';
 import { getSession, signInWithEmail, signUpWithEmail, sendPasswordReset } from '../services/supabase';
 import { toast } from 'react-hot-toast';
 
-const STORAGE_KEY = 'fit73-saved-credentials';
+const STORAGE_KEY = 'rudrafit-saved-credentials';
+
+function DumbbellIcon({ lifted = false }) {
+  return (
+    <svg viewBox="0 0 700 260" className="h-28 w-60 drop-shadow-[0_0_16px_rgba(255,255,255,0.15)]" aria-label="Dumbbell icon" role="img">
+      <g transform={`translate(0 ${lifted ? -14 : 0}) rotate(${lifted ? -9 : 0} 350 130)`}>
+        <rect x="78" y="90" width="126" height="80" rx="22" fill="#070707" />
+        <rect x="496" y="90" width="126" height="80" rx="22" fill="#070707" />
+        <rect x="160" y="104" width="380" height="52" rx="18" fill="#070707" />
+        <circle cx="92" cy="130" r="24" fill="#070707" />
+        <circle cx="608" cy="130" r="24" fill="#070707" />
+        <circle cx="92" cy="130" r="9" fill="#f5f5f5" />
+        <circle cx="608" cy="130" r="9" fill="#f5f5f5" />
+        <rect x="184" y="112" width="332" height="36" rx="12" fill="#f5f5f5" />
+      </g>
+    </svg>
+  );
+}
 
 function getSavedCredentials() {
   try {
@@ -31,6 +48,29 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [resetMessage, setResetMessage] = useState('');
+  const [isLifted, setIsLifted] = useState(false);
+  const dragStartY = useRef(0);
+  const isDragging = useRef(false);
+
+  const handleLiftStart = (event) => {
+    dragStartY.current = event.clientY;
+    isDragging.current = true;
+    event.currentTarget.setPointerCapture?.(event.pointerId);
+  };
+
+  const handleLiftMove = (event) => {
+    if (!isDragging.current) return;
+    const deltaY = event.clientY - dragStartY.current;
+
+    if (deltaY < -55) {
+      setIsLifted(true);
+      isDragging.current = false;
+    }
+  };
+
+  const handleLiftEnd = () => {
+    isDragging.current = false;
+  };
 
   useEffect(() => {
     const saved = getSavedCredentials();
@@ -82,7 +122,7 @@ export default function Login() {
           clearSavedCredentials();
         }
         if (data?.session?.user?.email_confirmed_at) {
-          toast.success('Welcome back to FIT73');
+          toast.success('Welcome back to RUDRAFIT');
           navigate('/dashboard');
         } else {
           toast.error('Please verify your email before logging in.');
@@ -126,7 +166,37 @@ export default function Login() {
           <h1 className="text-4xl font-semibold sm:text-5xl lg:text-6xl float">Welcome to your AI-powered training studio.</h1>
         </motion.div>
 
-        <motion.form initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} onSubmit={handleSubmit} className="relative w-full max-w-md rounded-[32px] border border-brand-white/10 bg-brand-white/10 p-6 shadow-[0_30px_100px_rgba(0,0,0,0.4)] backdrop-blur-xl sm:p-8">
+        <div className="relative w-full max-w-md">
+          <motion.div
+            initial={{ opacity: 0.95, y: 8 }}
+            animate={{ opacity: isLifted ? 0 : 1, y: isLifted ? -20 : 8, pointerEvents: isLifted ? 'none' : 'auto' }}
+            transition={{ duration: 0.35, ease: 'easeOut' }}
+            onPointerDown={handleLiftStart}
+            onPointerMove={handleLiftMove}
+            onPointerUp={handleLiftEnd}
+            onPointerCancel={handleLiftEnd}
+            onClick={() => setIsLifted(true)}
+            className="mb-4 mt-6 flex w-full cursor-grab select-none flex-col items-center justify-center touch-none active:cursor-grabbing"
+          >
+            <div className="mb-2 text-center text-[10px] font-semibold uppercase tracking-[0.4em] text-brand-red/80">
+              Drag up
+            </div>
+            <motion.div
+              animate={{ y: isLifted ? -18 : 0, rotate: isLifted ? -8 : 0, scale: isLifted ? 1.04 : [1, 1.03, 1] }}
+              transition={{ duration: 0.45, ease: 'easeOut', scale: { duration: 1.8, repeat: Infinity, ease: 'easeInOut' } }}
+              className="flex w-full items-center justify-center"
+            >
+              <DumbbellIcon lifted={isLifted} />
+            </motion.div>
+          </motion.div>
+
+          <motion.form
+            initial={{ opacity: 0, scale: 0.88, y: 26 }}
+            animate={{ opacity: isLifted ? 1 : 0, scale: isLifted ? 1 : 0.88, y: isLifted ? 0 : 26, pointerEvents: isLifted ? 'auto' : 'none' }}
+            transition={{ duration: 0.45, ease: 'easeOut' }}
+            onSubmit={handleSubmit}
+            className="relative w-full rounded-[32px] border border-brand-white/10 bg-brand-white/10 p-6 shadow-[0_30px_100px_rgba(0,0,0,0.4)] backdrop-blur-xl sm:p-8"
+          >
           <div className="absolute inset-0 -z-10 rounded-[32px] bg-animated" />
           <div className="mb-6 flex items-center justify-between">
             <div>
@@ -151,7 +221,8 @@ export default function Login() {
             <button type="button" onClick={() => setMode(mode === 'login' ? 'register' : 'login')} className="hover:text-brand-red">{mode === 'login' ? 'Create Account' : 'Already have an account?'}</button>
             <button type="button" onClick={handleReset} className="hover:text-brand-red">Forgot Password</button>
           </div>
-        </motion.form>
+          </motion.form>
+        </div>
       </div>
     </div>
   );

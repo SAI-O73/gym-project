@@ -19,7 +19,7 @@ export default function HeroSection() {
           transition={{ duration: 0.7, ease: 'easeOut', delay: 0.18 }}
           className="relative z-10"
         >
-          <h1 className="text-4xl font-semibold leading-[0.95] text-brand-white sm:text-5xl lg:text-7xl">
+          <h1 className="p-2 text-4xl font-semibold leading-[0.95] text-brand-white sm:text-5xl lg:text-7xl">
             Transform Your Physique with RUDRAFIT
           </h1>
         </motion.div>
@@ -31,9 +31,14 @@ export default function HeroSection() {
           className="relative z-10"
         >
           <div className="absolute inset-0 rounded-[32px] bg-gradient-to-br from-brand-red/20 via-transparent to-brand-red/20 blur-3xl" />
-          <img
+          <motion.img
             src="https://i.pinimg.com/736x/19/c7/94/19c794e6ab55ee9cde857a9c48577ec0.jpg"
             alt="Strength training"
+            animate={{ y: [0, -7, 0], rotate: [0, 0.5, 0] }}
+            transition={{
+              y: { duration: 4.5, repeat: Infinity, ease: 'easeInOut' },
+              rotate: { duration: 4.5, repeat: Infinity, ease: 'easeInOut' },
+            }}
             className="relative mx-auto block h-[280px] max-w-full overflow-hidden rounded-[20px] border border-brand-white/10 bg-brand-black object-contain object-center p-2 shadow-[0_20px_80px_rgba(0,0,0,0.4)] sm:h-[360px] sm:rounded-[28px] sm:p-3 lg:h-[450px] lg:rounded-[32px]"
           />
         </motion.div>

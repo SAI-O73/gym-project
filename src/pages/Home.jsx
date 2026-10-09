@@ -1,6 +1,6 @@
 import HeroSection from '../components/HeroSection';
 import SectionHeading from '../components/SectionHeading';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { FaDumbbell, FaAppleAlt, FaHeartbeat, FaRunning } from 'react-icons/fa';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -36,7 +36,7 @@ function BmrWidget() {
           const { data: profileData } = await getUserProfile(userId);
           if (profileData) {
             const p = profileData;
-            localStorage.setItem('fit73-profile', JSON.stringify(p));
+            localStorage.setItem('rudrafit-profile', JSON.stringify(p));
             if (p.weight) setWeight(String(p.weight));
             if (p.height) setHeight(String(p.height));
             if (p.age) setAge(String(p.age));
@@ -45,7 +45,7 @@ function BmrWidget() {
           }
         }
 
-        const raw = localStorage.getItem('fit73-profile');
+        const raw = localStorage.getItem('rudrafit-profile');
         if (!raw) return;
         const p = JSON.parse(raw);
         if (p.weight) setWeight(String(p.weight));
@@ -70,8 +70,8 @@ function BmrWidget() {
     const rounded = Math.round(result);
     setBmr(rounded);
     const stats = { weight: w, height: h, age: a, gender, bmr: rounded };
-    localStorage.setItem('fit73-home-stats', JSON.stringify(stats));
-    window.dispatchEvent(new CustomEvent('fit73-home-stats-updated', { detail: stats }));
+    localStorage.setItem('rudrafit-home-stats', JSON.stringify(stats));
+    window.dispatchEvent(new CustomEvent('rudrafit-home-stats-updated', { detail: stats }));
   };
 
   const profileBmr = (() => {
@@ -220,13 +220,13 @@ function ProteinWidget() {
             if (savedHeight) setHeight(String(savedHeight));
             if (savedAge) setAge(String(savedAge));
             if (savedGoal) setGoal(savedGoal);
-            localStorage.setItem('fit73-profile', JSON.stringify(profileData));
+            localStorage.setItem('rudrafit-profile', JSON.stringify(profileData));
             return;
           }
         }
 
-        const profile = JSON.parse(localStorage.getItem('fit73-profile') || 'null');
-        const stats = JSON.parse(localStorage.getItem('fit73-home-stats') || 'null');
+        const profile = JSON.parse(localStorage.getItem('rudrafit-profile') || 'null');
+        const stats = JSON.parse(localStorage.getItem('rudrafit-home-stats') || 'null');
         const savedWeight = profile?.weight || stats?.weight;
         const savedHeight = profile?.height || stats?.height;
         const savedAge = profile?.age || stats?.age;
@@ -299,19 +299,20 @@ function ProteinWidget() {
 }
 
 export default function Home() {
+  const prefersReducedMotion = useReducedMotion();
   const [homeStats, setHomeStats] = useState(null);
 
   useEffect(() => {
     try {
-      const raw = localStorage.getItem('fit73-home-stats');
+      const raw = localStorage.getItem('rudrafit-home-stats');
       if (raw) setHomeStats(JSON.parse(raw));
     } catch {
       setHomeStats(null);
     }
 
     const handleStatsUpdate = (event) => setHomeStats(event.detail);
-    window.addEventListener('fit73-home-stats-updated', handleStatsUpdate);
-    return () => window.removeEventListener('fit73-home-stats-updated', handleStatsUpdate);
+    window.addEventListener('rudrafit-home-stats-updated', handleStatsUpdate);
+    return () => window.removeEventListener('rudrafit-home-stats-updated', handleStatsUpdate);
   }, []);
 
   const dietPlans = getPersonalizedDietPlans(homeStats).map((plan) => ({
@@ -360,7 +361,7 @@ export default function Home() {
         className="px-4 py-16 sm:px-6 lg:px-8"
       >
         <div className="mx-auto max-w-7xl">
-          <SectionHeading eyebrow="Signature Plans" title="Elite nutrition programs" description="Curated for fat loss, muscle gain, and maintenance with fit73 premium structure." />
+          <SectionHeading eyebrow="Signature Plans" title="Elite nutrition programs" description="Curated for fat loss, muscle gain, and maintenance with RUDRAFIT premium structure." />
           <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
             {dietPlans.map((plan) => (
               <motion.article
@@ -427,7 +428,26 @@ export default function Home() {
         </div>
       </motion.section>
 
-      
+      <div role="region" aria-label="Thank you for visiting RUDRAFIT" className="overflow-hidden border-y border-brand-red/20 bg-brand-white/5 py-3">
+        <motion.div
+          aria-hidden="true"
+          initial={{ x: '0%' }}
+          animate={{ x: prefersReducedMotion ? '0%' : '-50%' }}
+          transition={{ duration: 24, repeat: prefersReducedMotion ? 0 : Infinity, ease: 'linear' }}
+          className="flex w-max gap-6 whitespace-nowrap text-xs font-semibold uppercase tracking-[0.2em] text-brand-red sm:text-sm"
+        >
+          {[0, 1].map((group) => (
+            <div key={group} className="flex shrink-0 items-center gap-8">
+              <span>Thank you for visiting</span>
+              <span className="text-brand-white">RUDRAFIT</span>
+              <span>Power Within You</span>
+              <span className="text-brand-white">Thank you for visiting</span>
+              <span>RUDRAFIT</span>
+              <span className="text-brand-white">Power Within You</span>
+            </div>
+          ))}
+        </motion.div>
+      </div>
     </div>
   );
 }

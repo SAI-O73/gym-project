@@ -5,7 +5,7 @@ export default function Footer() {
     <footer className="border-t border-brand-white/10 bg-brand-black/70 px-4 py-10 text-sm text-brand-gray sm:px-6 lg:px-8">
       <div className="mx-auto flex max-w-7xl flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
         <div className="flex flex-col gap-4">
-          <p className="font-semibold tracking-[0.35em] text-brand-red">FIT73</p>
+          <p className="font-semibold tracking-[0.35em] text-brand-red">RUDRAFIT</p>
           <div className="flex flex-wrap gap-4">
             <a href="/about" className="transition hover:text-brand-red">About</a>
             <a href="/contact" className="transition hover:text-brand-red">Contact</a>

@@ -8,9 +8,9 @@ export default function AuthConfirmed() {
         <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-brand-red/15 text-brand-red">
           <FiCheckCircle size={34} />
         </div>
-        <p className="mt-6 text-sm font-semibold uppercase tracking-[0.3em] text-brand-red">FIT73</p>
+        <p className="mt-6 text-sm font-semibold uppercase tracking-[0.3em] text-brand-red">RUDRAFIT</p>
         <h1 className="mt-3 text-3xl font-semibold">Your account is created</h1>
-        <p className="mt-4 text-brand-gray">Your email has been verified successfully. Welcome to FIT73.</p>
+        <p className="mt-4 text-brand-gray">Your email has been verified successfully. Welcome to RUDRAFIT.</p>
         <Link to="/" className="mt-8 inline-flex rounded-full bg-brand-red px-6 py-3 font-semibold transition hover:bg-red-700">
           Continue to login
         </Link>

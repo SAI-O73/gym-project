@@ -6,7 +6,7 @@ export default function Contact() {
   const [form, setForm] = useState({ name: '', email: '', message: '' });
 
   const openMailFallback = () => {
-    const subject = encodeURIComponent(`FIT73 contact message from ${form.name}`);
+    const subject = encodeURIComponent(`RUDRAFIT contact message from ${form.name}`);
     const body = encodeURIComponent(`Name: ${form.name}\nEmail: ${form.email}\n\n${form.message}`);
     const mailtoUrl = `mailto:dsaimtm@gmail.com?subject=${subject}&body=${body}`;
 
@@ -30,7 +30,7 @@ export default function Contact() {
         error.status = res.status;
         throw error;
       }
-      toast.success('Message sent to FIT73.');
+      toast.success('Message sent to RUDRAFIT.');
       setForm({ name: '', email: '', message: '' });
     } catch (err) {
       const status = err?.status;

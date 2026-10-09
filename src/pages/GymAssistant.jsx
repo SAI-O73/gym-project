@@ -5,7 +5,7 @@ import { askGemini } from '../services/gemini';
 import toast from 'react-hot-toast';
 
 export default function AIChat() {
-  const welcomeMessage = { from: 'bot', text: 'Hello! I can answer questions about FIT73 pages, features, account setup, diet, workouts, protein, recovery, and more.' };
+  const welcomeMessage = { from: 'bot', text: 'Hello! I can answer questions about the RUDRAFIT homepage, brand style, pages, profile, BMR, diet, workouts, protein, AI Coach features, and your fitness goals.' };
   const [messages, setMessages] = useState([
     welcomeMessage,
   ]);
@@ -13,7 +13,14 @@ export default function AIChat() {
   const [loading, setLoading] = useState(false);
   const [lastUserMessage, setLastUserMessage] = useState('');
   const [lastErrorStatus, setLastErrorStatus] = useState(null);
-  const quickPrompts = ['Build me a 3-day workout', 'How much protein do I need?', 'Create a weight-loss meal plan', 'How should I recover?'];
+  const quickPrompts = [
+    'Explain the RUDRAFIT homepage design',
+    'How do I use the BMR and protein calculators?',
+    'What should I do on the Profile page?',
+    'Build a 3-day RUDRAFIT workout plan',
+    'Create a fat-loss meal plan for my goal',
+    'How do I use the Diet and Workout pages?'
+  ];
 
   const handleSubmit = async (e) => {
     e.preventDefault();
