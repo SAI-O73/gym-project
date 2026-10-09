@@ -53,7 +53,7 @@ export default function Profile() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const requiredFields = [profile.full_name, profile.email, profile.weight, profile.height, profile.age, profile.gender, profile.goal, profile.image];
+    const requiredFields = [profile.full_name, profile.email, profile.weight, profile.height, profile.age, profile.gender, profile.goal];
     if (requiredFields.some((field) => !String(field || '').trim())) {
       setSaved(false);
       setError('Please enter all fields to save your profile.');

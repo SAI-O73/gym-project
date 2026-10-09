@@ -5,6 +5,7 @@ import { FaDumbbell, FaAppleAlt, FaHeartbeat, FaRunning } from 'react-icons/fa';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { getPersonalizedDietPlans } from '../services/dietPlans';
+import { getSession, getUserProfile } from '../services/supabase';
 
 const dietPlanImages = {
   'Weight Loss': 'https://i.pinimg.com/736x/08/7b/40/087b4089c161d62e8ca83a1557a44e24.jpg',
@@ -26,17 +27,37 @@ function BmrWidget() {
   const [bmr, setBmr] = useState(null);
 
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem('fit73-profile');
-      if (!raw) return;
-      const p = JSON.parse(raw);
-      if (p.weight) setWeight(p.weight);
-      if (p.height) setHeight(p.height);
-      if (p.age) setAge(p.age);
-      if (p.gender) setGender(p.gender);
-    } catch {
-      // ignore
-    }
+    const loadRemoteProfile = async () => {
+      try {
+        const { data } = await getSession();
+        const userId = data.session?.user?.id;
+
+        if (userId) {
+          const { data: profileData } = await getUserProfile(userId);
+          if (profileData) {
+            const p = profileData;
+            localStorage.setItem('fit73-profile', JSON.stringify(p));
+            if (p.weight) setWeight(String(p.weight));
+            if (p.height) setHeight(String(p.height));
+            if (p.age) setAge(String(p.age));
+            if (p.gender) setGender(p.gender);
+            return;
+          }
+        }
+
+        const raw = localStorage.getItem('fit73-profile');
+        if (!raw) return;
+        const p = JSON.parse(raw);
+        if (p.weight) setWeight(String(p.weight));
+        if (p.height) setHeight(String(p.height));
+        if (p.age) setAge(String(p.age));
+        if (p.gender) setGender(p.gender);
+      } catch {
+        // ignore
+      }
+    };
+
+    loadRemoteProfile();
   }, []);
 
   const calculateBmr = (e) => {
@@ -121,33 +142,53 @@ function BmrWidget() {
         </div>
       </form>
 
-      <div className="rounded-[20px] border border-brand-white/10 bg-brand-black/30 p-4">
-        <p className="text-sm uppercase tracking-[0.35em] text-brand-red">Your Profile</p>
-        <div className="mt-4 space-y-3 text-sm text-brand-gray">
-          <div className="rounded-2xl bg-brand-white/10 p-3">
-            <p className="text-xs uppercase tracking-[0.25em] text-brand-gray">Body Weight</p>
-            <p className="mt-1 text-lg font-semibold text-brand-white">{weight} kg</p>
+      <div className="rounded-[24px] border border-brand-red/20 bg-gradient-to-br from-brand-red/10 via-brand-black/80 to-brand-black p-5 shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
+        <div className="mb-4 flex items-center justify-between">
+          <div>
+            <p className="text-sm uppercase tracking-[0.35em] text-brand-red">Your Profile</p>
+            <p className="mt-2 text-xs text-brand-gray">Daily readiness</p>
           </div>
-          <div className="rounded-2xl bg-brand-white/10 p-3">
-            <p className="text-xs uppercase tracking-[0.25em] text-brand-gray">Height</p>
-            <p className="mt-1 text-lg font-semibold text-brand-white">{height} cm</p>
+          <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-brand-red/30 bg-brand-red/10 text-brand-red">
+            <FaDumbbell className="text-lg" />
           </div>
-          <div className="rounded-2xl bg-brand-white/10 p-3 grid gap-2 md:grid-cols-2">
-            <div>
-              <p className="text-xs uppercase tracking-[0.25em] text-brand-gray">Age</p>
-              <p className="mt-1 text-lg font-semibold text-brand-white">{age}</p>
+        </div>
+
+        <div className="space-y-3 text-sm text-brand-gray">
+          <div className="grid gap-3 sm:grid-cols-2">
+            <div className="rounded-2xl border border-brand-white/10 bg-brand-white/5 p-3">
+              <p className="text-[10px] uppercase tracking-[0.25em] text-brand-gray">Weight</p>
+              <p className="mt-2 text-lg font-semibold text-brand-white">{weight || '—'} <span className="text-sm font-normal text-brand-gray">kg</span></p>
             </div>
-            <div>
-              <p className="text-xs uppercase tracking-[0.25em] text-brand-gray">Gender</p>
-              <p className="mt-1 text-lg font-semibold text-brand-white">{gender}</p>
+            <div className="rounded-2xl border border-brand-white/10 bg-brand-white/5 p-3">
+              <p className="text-[10px] uppercase tracking-[0.25em] text-brand-gray">Height</p>
+              <p className="mt-2 text-lg font-semibold text-brand-white">{height || '—'} <span className="text-sm font-normal text-brand-gray">cm</span></p>
             </div>
           </div>
+
+          <div className="grid gap-3 sm:grid-cols-2">
+            <div className="rounded-2xl border border-brand-white/10 bg-brand-white/5 p-3">
+              <p className="text-[10px] uppercase tracking-[0.25em] text-brand-gray">Age</p>
+              <p className="mt-2 text-lg font-semibold text-brand-white">{age || '—'}</p>
+            </div>
+            <div className="rounded-2xl border border-brand-white/10 bg-brand-white/5 p-3">
+              <p className="text-[10px] uppercase tracking-[0.25em] text-brand-gray">Gender</p>
+              <p className="mt-2 text-lg font-semibold capitalize text-brand-white">{gender || '—'}</p>
+            </div>
+          </div>
+
           {profileBmr ? (
             <div className="rounded-2xl border border-brand-red/30 bg-brand-red/10 p-3">
-              <p className="text-xs uppercase tracking-[0.25em] text-brand-red">Current BMR</p>
-              <p className="mt-1 text-xl font-semibold text-brand-white">{profileBmr} kcal/day</p>
+              <div className="flex items-center justify-between gap-3">
+                <p className="text-[10px] uppercase tracking-[0.25em] text-brand-red">Current BMR</p>
+                <FaHeartbeat className="text-brand-red" />
+              </div>
+              <p className="mt-2 text-2xl font-semibold text-brand-white">{profileBmr} <span className="text-sm font-medium text-brand-gray">kcal/day</span></p>
             </div>
-          ) : null}
+          ) : (
+            <div className="rounded-2xl border border-dashed border-brand-white/20 bg-brand-white/5 p-3 text-sm text-brand-gray">
+              Add your metrics to unlock your BMR snapshot.
+            </div>
+          )}
         </div>
       </div>
     </div>
@@ -156,45 +197,95 @@ function BmrWidget() {
 
 function ProteinWidget() {
   const [weight, setWeight] = useState('');
+  const [height, setHeight] = useState('');
+  const [age, setAge] = useState('');
   const [goal, setGoal] = useState('Maintenance');
   const [protein, setProtein] = useState(null);
 
   useEffect(() => {
-    try {
-      const profile = JSON.parse(localStorage.getItem('fit73-profile') || 'null');
-      const stats = JSON.parse(localStorage.getItem('fit73-home-stats') || 'null');
-      const savedWeight = profile?.weight || stats?.weight;
-      if (savedWeight) setWeight(savedWeight);
-      if (profile?.goal) setGoal(profile.goal);
-    } catch {
-      // Ignore unavailable saved profile data.
-    }
+    const loadProfile = async () => {
+      try {
+        const { data } = await getSession();
+        const userId = data.session?.user?.id;
+
+        if (userId) {
+          const { data: profileData } = await getUserProfile(userId);
+          if (profileData) {
+            const savedWeight = profileData.weight;
+            const savedHeight = profileData.height;
+            const savedAge = profileData.age;
+            const savedGoal = profileData.goal;
+
+            if (savedWeight) setWeight(String(savedWeight));
+            if (savedHeight) setHeight(String(savedHeight));
+            if (savedAge) setAge(String(savedAge));
+            if (savedGoal) setGoal(savedGoal);
+            localStorage.setItem('fit73-profile', JSON.stringify(profileData));
+            return;
+          }
+        }
+
+        const profile = JSON.parse(localStorage.getItem('fit73-profile') || 'null');
+        const stats = JSON.parse(localStorage.getItem('fit73-home-stats') || 'null');
+        const savedWeight = profile?.weight || stats?.weight;
+        const savedHeight = profile?.height || stats?.height;
+        const savedAge = profile?.age || stats?.age;
+
+        if (savedWeight) setWeight(String(savedWeight));
+        if (savedHeight) setHeight(String(savedHeight));
+        if (savedAge) setAge(String(savedAge));
+        if (profile?.goal) setGoal(profile.goal);
+      } catch {
+        // Ignore unavailable saved profile data.
+      }
+    };
+
+    loadProfile();
   }, []);
 
   const calculateProtein = (e) => {
     e.preventDefault();
     const weightValue = Number(weight);
-    if (!weightValue || weightValue <= 0) return;
+    const heightValue = Number(height);
+    const ageValue = Number(age);
 
-    const multiplier = goal === 'Muscle Gain' ? 2 : 1.6;
-    setProtein(Math.round(weightValue * multiplier));
+    if (!weightValue || !heightValue || !ageValue || weightValue <= 0 || heightValue <= 0 || ageValue <= 0) return;
+
+    let goalMultiplier = 1.6;
+    if (goal === 'Weight Loss') goalMultiplier = 1.8;
+    if (goal === 'Muscle Gain') goalMultiplier = 2.2;
+    if (goal === 'Maintenance') goalMultiplier = 1.6;
+
+    const ageFactor = ageValue < 30 ? 1.08 : ageValue > 50 ? 0.97 : 1.02;
+    const heightFactor = heightValue > 180 ? 1.05 : heightValue < 160 ? 0.98 : 1.02;
+
+    const target = Math.round(weightValue * goalMultiplier * ageFactor * heightFactor);
+    setProtein(target);
   };
 
   return (
     <div className="rounded-[20px] border border-brand-white/10 bg-brand-black/30 p-4">
       <p className="text-sm uppercase tracking-[0.35em] text-brand-red">Protein Calculator</p>
-      <p className="mt-2 text-sm text-brand-gray">Estimate your daily protein target from your weight and goal.</p>
+      <p className="mt-2 text-sm text-brand-gray">Estimate your daily protein target using your age, height, weight, and goal.</p>
       <form onSubmit={calculateProtein} className="mt-5 space-y-3">
-        <label className="block text-sm text-brand-gray">Weight (kg)
-          <input type="number" min="1" value={weight} onChange={(e) => setWeight(e.target.value)} placeholder="e.g. 75" required className="mt-1 w-full rounded-2xl border border-brand-white/10 bg-brand-black/30 px-3 py-2 text-brand-white outline-none focus:border-brand-red/60" />
-        </label>
-        <label className="block text-sm text-brand-gray">Goal
-          <select value={goal} onChange={(e) => setGoal(e.target.value)} style={{ colorScheme: 'dark' }} className="mt-1 w-full rounded-2xl border border-brand-white/10 bg-brand-black/30 px-3 py-2 text-brand-white outline-none focus:border-brand-red/60">
-            <option className="bg-black text-white">Weight Loss</option>
-            <option className="bg-black text-white">Muscle Gain</option>
-            <option className="bg-black text-white">Maintenance</option>
-          </select>
-        </label>
+        <div className="grid gap-3 sm:grid-cols-2">
+          <label className="block text-sm text-brand-gray">Weight (kg)
+            <input type="number" min="1" value={weight} onChange={(e) => setWeight(e.target.value)} placeholder="e.g. 75" required className="mt-1 w-full rounded-2xl border border-brand-white/10 bg-brand-black/30 px-3 py-2 text-brand-white outline-none focus:border-brand-red/60" />
+          </label>
+          <label className="block text-sm text-brand-gray">Height (cm)
+            <input type="number" min="1" value={height} onChange={(e) => setHeight(e.target.value)} placeholder="e.g. 180" required className="mt-1 w-full rounded-2xl border border-brand-white/10 bg-brand-black/30 px-3 py-2 text-brand-white outline-none focus:border-brand-red/60" />
+          </label>
+          <label className="block text-sm text-brand-gray">Age
+            <input type="number" min="1" value={age} onChange={(e) => setAge(e.target.value)} placeholder="e.g. 25" required className="mt-1 w-full rounded-2xl border border-brand-white/10 bg-brand-black/30 px-3 py-2 text-brand-white outline-none focus:border-brand-red/60" />
+          </label>
+          <label className="block text-sm text-brand-gray">Goal
+            <select value={goal} onChange={(e) => setGoal(e.target.value)} style={{ colorScheme: 'dark' }} className="mt-1 w-full rounded-2xl border border-brand-white/10 bg-brand-black/30 px-3 py-2 text-brand-white outline-none focus:border-brand-red/60">
+              <option className="bg-black text-white">Weight Loss</option>
+              <option className="bg-black text-white">Muscle Gain</option>
+              <option className="bg-black text-white">Maintenance</option>
+            </select>
+          </label>
+        </div>
         <button type="submit" className="w-full rounded-full bg-brand-red px-4 py-2 text-sm font-semibold transition hover:bg-red-700">Calculate Protein</button>
       </form>
       {protein ? (

@@ -6,9 +6,6 @@ export default function HeroSection() {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(var(--accent-rgb),0.22),_transparent_35%),radial-gradient(circle_at_bottom_right,_rgba(var(--muted-rgb),0.18),_transparent_30%)]" />
       <div className="mx-auto grid max-w-7xl items-center gap-10 lg:grid-cols-[1.1fr_0.9fr]">
         <motion.div initial={{ x: -24, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ duration: 0.6 }}>
-          <p className="mb-4 inline-flex rounded-full border border-brand-red/30 bg-brand-red/10 px-4 py-2 text-sm font-medium text-brand-red">
-            AI-powered fitness intelligence
-          </p>
           <h1 className="text-4xl font-semibold leading-tight text-brand-white sm:text-5xl lg:text-7xl">
             Transform Your Physique with RUDRAFIT<span className="bg-gradient-to-r from-brand-red to-brand-red bg-clip-text text-transparent">RUDRAFIT</span>
           </h1>

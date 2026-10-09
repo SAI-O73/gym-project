@@ -197,9 +197,46 @@ export async function deleteUserProfile(userId) {
 export async function deleteUserAccount() {
   const client = ensureSupabaseClient();
   if (!client) return { data: null, error: { message: 'Supabase client is not available.' } };
-  const edgeFunctionResult = await client.functions.invoke('delete-account');
-  if (!edgeFunctionResult.error) return edgeFunctionResult;
-  return client.rpc('delete_user_account');
+
+  try {
+    const { data: sessionData } = await getSession();
+    const userId = sessionData?.session?.user?.id;
+
+    if (userId) {
+      try {
+        await client.from('profiles').delete().eq('id', userId);
+      } catch (profileError) {
+        console.warn('Profile cleanup warning:', profileError);
+      }
+    }
+
+    try {
+      const edgeFunctionResult = await client.functions.invoke('delete-account');
+      if (!edgeFunctionResult?.error) return edgeFunctionResult;
+      console.warn('delete-account edge function failed; trying SQL fallback:', edgeFunctionResult.error?.message || edgeFunctionResult.error);
+    } catch (edgeError) {
+      console.warn('delete-account edge function unavailable; trying SQL fallback:', edgeError?.message || edgeError);
+    }
+
+    try {
+      const rpcResult = await client.rpc('delete_user_account');
+      return rpcResult;
+    } catch (rpcError) {
+      return {
+        data: null,
+        error: {
+          message: rpcError?.message || 'Unable to delete your account from Supabase. Deploy the delete-account Edge Function and ensure the service role key is configured.',
+        },
+      };
+    }
+  } catch (error) {
+    return {
+      data: null,
+      error: {
+        message: error?.message || 'Unable to delete your account right now.',
+      },
+    };
+  }
 }
 
 export function getSupabaseClient() {
